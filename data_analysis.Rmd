@@ -51,41 +51,6 @@ CSQPlot<-function(vars,label="Chi-Square Quantile Plot"){
 ```
 
 
-```{r warning=FALSE}
-# loading in data
-df_2015 <- rbind(read_xlsx("data/2015.xlsx"), read_xlsx("data/2015b.xlsx"))
-df_2016 <- read_xlsx("data/2016.xlsx")
-df_2017 <- rbind(read_xlsx("data/2017.xlsx"), read_xlsx("data/2017b.xlsx"))
-df_2018 <- rbind(read_xlsx("data/2018a.xlsx"),
-                 read_xlsx("data/2018b.xlsx"),
-                 read_xlsx("data/2018c.xlsx"))
-df_2019 <- rbind(read_xlsx("data/2019a.xlsx"),
-                 read_xlsx("data/2019b.xlsx"),
-                 read_xlsx("data/2019c.xlsx"))
-df_2020 <- read_xlsx("data/2020.xlsx")
-
-# saving data for easy loading next time
-save(
-  df_2015,
-  df_2016,
-  df_2017,
-  df_2018,
-  df_2019,
-  df_2020,
-  file="allyears.RData"
-)
-
-# basic structure
-dim(df_2015)
-names(df_2015)
-str(df_2015)
-# subsetting for numeric data only
-num2015 <- select_if(df_2015, c("SALARY", "HOURLY_RATE", "HOURLY_WORKWEEK", "AGE", "FAIR_PAY"))
-
-names(df_2015)
-names(df_2020)
-```
-
 Note: tests for multivariate normality must have shorter tables, should I
 just sample them?
 
@@ -119,7 +84,8 @@ p1 <- ggplot(data = df_2015) +
 # p2 <- ggMarginal(p1, groupFill = TRUE, margins = "y") 
 
 # overlaid histogram for salary vs gender
-df_2015 %>%
+salaryhist <- function(x){
+  x %>%
   filter(!is.na(GENDER)) %>%
   ggplot() +
     geom_density(aes(x = SALARY, fill = GENDER),
@@ -127,19 +93,19 @@ df_2015 %>%
     theme(legend.position = c(0.1, .73), # adding legend
           plot.title = element_text(vjust = 0.25)) + # moving title
     xlim(c(0,200000)) +
-    theme_bw()
+    theme_bw() +
+    ylim(0, 3.5 * 10 ** (-5)) +
+    scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8"))
+}
 
-# comparing 2015 with recent year
-df_2020 %>%
-  filter(!is.na(GENDER)) %>%
-  ggplot() +
-    geom_density(aes(x = SALARY, fill = GENDER),
-                 alpha=0.25) + 
-    theme(legend.position = c(0.1, .73), # adding legend
-          plot.title = element_text(vjust = 0.25)) + # moving title
-    xlim(c(0,200000)) +
-    theme_bw() + 
-    scale_fill_discrete(labels=c('Female', 'Male', 'Other'))
+salaryhist(df_2015)
+salaryhist(df_2016)
+salaryhist(df_2017)
+salaryhist(df_2018)
+salaryhist(df_2019)
+salaryhist(df_2020)
+
+# note: need to normalize gender categories in data processing
 ```
 
 ```{r}

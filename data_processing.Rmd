@@ -40,4 +40,33 @@ num2015 <- select_if(df_2015, c("SALARY", "HOURLY_RATE", "HOURLY_WORKWEEK", "AGE
 
 names(df_2015)
 names(df_2020)
+
+
 ```
+
+```{r}
+# getting consistent gender labels
+
+
+# is there a more elegant way to do this???
+df_2015$GENDER[!(df_2015$GENDER %in% c("Female", "Male", NA))] <- "Other"
+df_2016$GENDER[!(df_2016$GENDER %in% c("Female", "Male", NA))] <- "Other"
+df_2017$GENDER[!(df_2017$GENDER %in% c("Female", "Male", NA))] <- "Other"
+df_2018$GENDER[!(df_2018$GENDER %in% c("Female", "Male", NA))] <- "Other"
+df_2019$GENDER[!(df_2019$GENDER %in% c("Female", "Male", NA))] <- "Other"
+df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
+
+### below doesn't work
+# dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
+# lapply(dfList, function(x){
+#   x$GENDER[!(x$GENDER %in% c("Female", "Male", NA))] <- "Other"
+# })
+# 
+# table(df_2015$GENDER)
+
+```
+
+
+
+ 
+ 
