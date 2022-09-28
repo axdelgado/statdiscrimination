@@ -1,0 +1,148 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# setting up environment
+setwd("~/Yale/2022 Fall/Tobin RA")
+# loading packages
+library(readxl)
+library(tidyverse)
+library(Hmisc)
+library(heplots)
+library(ggExtra)
+
+# loading data
+load("allyears.RData")
+
+# chi-square quantile plot function, credit to JDRS
+#A function to make chi-square quantile plots 
+#to test for multivariate normality of data or residuals
+CSQPlot<-function(vars,label="Chi-Square Quantile Plot"){
+  #usually, vars is xxx$residuals or data from one group and label is for plot
+  x<-cov(scale(vars),use="pairwise.complete.obs")
+  squares<-sort(diag(as.matrix(scale(vars))%*%solve(x)%*%as.matrix(t(scale(vars)))))
+  quantiles<-quantile(squares)
+  hspr<-quantiles[4]-quantiles[2]
+  cumprob<-c(1:length(vars[,1]))/length(vars[,1])-1/(2*length(vars[,1]))
+  degf<-dim(x)[1]
+  quants<-qchisq(cumprob,df=degf)
+  gval<-(quants**(-1+degf/2))/(exp(quants/2)*gamma(degf/2)*(sqrt(2)**degf))
+  scale<-hspr / (qchisq(.75,degf)-qchisq(.25,degf))
+  se<-(scale/gval)*sqrt(cumprob*(1-cumprob)/length(squares))
+  lower<-quants-2*se
+  upper<-quants+2*se
+  
+  plot(quants,squares,col='red',pch=19,cex=1.2,xlab="Chi-Square Quantiles",
+       ylab="Squared MH Distance",main=paste("Chi-Square Quantiles for",label),ylim=range(upper,lower, squares) , xlim=range(c(0,quants)))
+  lines(c(0,100),c(0,100),col=1)
+  lines(quants,upper,col="blue",lty=2,lwd=2)
+  lines(quants,lower,col="blue",lty=2,lwd=2)
+  legend("topleft",c("Data","95% Conf Limits"),lty=c(0,2),col=c("red","blue"),lwd=c(2,2),
+         pch=c(19,NA))
+}
+#An example of usage of this function
+#CSQPlot(danielaaov$residuals,label="Daniela MANOVA Residuals")
+```
+
+
+```{r warning=FALSE}
+# loading in data
+df_2015 <- rbind(read_xlsx("data/2015.xlsx"), read_xlsx("data/2015b.xlsx"))
+df_2016 <- read_xlsx("data/2016.xlsx")
+df_2017 <- rbind(read_xlsx("data/2017.xlsx"), read_xlsx("data/2017b.xlsx"))
+df_2018 <- rbind(read_xlsx("data/2018a.xlsx"),
+                 read_xlsx("data/2018b.xlsx"),
+                 read_xlsx("data/2018c.xlsx"))
+df_2019 <- rbind(read_xlsx("data/2019a.xlsx"),
+                 read_xlsx("data/2019b.xlsx"),
+                 read_xlsx("data/2019c.xlsx"))
+df_2020 <- read_xlsx("data/2020.xlsx")
+
+# saving data for easy loading next time
+save(
+  df_2015,
+  df_2016,
+  df_2017,
+  df_2018,
+  df_2019,
+  df_2020,
+  file="allyears.RData"
+)
+
+# basic structure
+dim(df_2015)
+names(df_2015)
+str(df_2015)
+# subsetting for numeric data only
+num2015 <- select_if(df_2015, c("SALARY", "HOURLY_RATE", "HOURLY_WORKWEEK", "AGE", "FAIR_PAY"))
+
+names(df_2015)
+names(df_2020)
+```
+
+Note: tests for multivariate normality must have shorter tables, should I
+just sample them?
+
+```{r}
+
+#CSQPlot(num2015) #error: not enough ram
+#heplots::cqplot(num2015)
+# library(QuantPsyc)
+# mult.norm(num2015)$mult.test
+# CSQPlot(sample_n(num2015,500))
+
+cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
+# interesting error - is it either salary or wage reported?
+```
+
+Potentially useful (numeric) variables:
+SALARY, HOURLY_RATE, HOURLY_WORKWEEK, AGE, FAIR_PAY
+
+```{r}
+# trying to compare female to male
+p1 <- ggplot(data = df_2015) +
+        geom_boxplot(aes(x = GENDER, y = SALARY, col = GENDER),
+                    width = 0.1) + # jittered
+        theme(legend.position = c(0.1, .73), # adding legend
+              plot.title = element_text(vjust = 0.25) # moving title
+              ) +
+        ylim(c(0, 250000)) +
+  theme_bw()
+
+# adding marginal histograms to scatterplot, not nec for box    
+# p2 <- ggMarginal(p1, groupFill = TRUE, margins = "y") 
+
+# overlaid histogram for salary vs gender
+df_2015 %>%
+  filter(!is.na(GENDER)) %>%
+  ggplot() +
+    geom_density(aes(x = SALARY, fill = GENDER),
+                 alpha=0.25) + 
+    theme(legend.position = c(0.1, .73), # adding legend
+          plot.title = element_text(vjust = 0.25)) + # moving title
+    xlim(c(0,200000)) +
+    theme_bw()
+
+# comparing 2015 with recent year
+df_2020 %>%
+  filter(!is.na(GENDER)) %>%
+  ggplot() +
+    geom_density(aes(x = SALARY, fill = GENDER),
+                 alpha=0.25) + 
+    theme(legend.position = c(0.1, .73), # adding legend
+          plot.title = element_text(vjust = 0.25)) + # moving title
+    xlim(c(0,200000)) +
+    theme_bw() + 
+    scale_fill_discrete(labels=c('Female', 'Male', 'Other'))
+```
+
+```{r}
+
+```
+
