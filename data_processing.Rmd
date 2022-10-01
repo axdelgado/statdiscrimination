@@ -8,6 +8,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+#working directory
+setwd("~/Yale/2022 Fall/Tobin RA")
 # packages
 library(tidyverse)
 library(readxl)
@@ -47,7 +49,23 @@ str(df_2015)
 ```
 
 ```{r}
-### basic stats 
+### response count stats
+nrow(df_2015)
+nrow(df_2016)
+nrow(df_2017)
+nrow(df_2018)
+nrow(df_2019)
+nrow(df_2020)
+# number of responses changes a lot! Is this an issue?
+
+### checking if there are duplicates within each year
+length(unique(df_2015$PID))-nrow(df_2015)
+length(unique(df_2016$PID))-nrow(df_2016)
+length(unique(df_2017$PID))-nrow(df_2017)
+length(unique(df_2018$PID))-nrow(df_2018)
+length(unique(df_2019$PID))-nrow(df_2019)
+length(unique(df_2020$PID))-nrow(df_2020)
+# no duplicates within year
 ```
 
 

@@ -27,5 +27,6 @@
 
 * checked for distribution of gender labels reported
 * checked counts for different years to see if # of survey respondants changed significantly (it did!)
+* checked to see if there are any repeat responses in each year
 
 </details>
