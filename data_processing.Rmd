@@ -7,6 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+# packages
+library(tidyverse)
+library(readxl)
+```
+ 
+
 ```{r warning=FALSE}
 # loading in data
 df_2015 <- rbind(read_xlsx("data/2015.xlsx"), read_xlsx("data/2015b.xlsx"))
@@ -36,17 +43,16 @@ save(
 dim(df_2015)
 names(df_2015)
 str(df_2015)
-# subsetting for numeric data only
-num2015 <- select_if(df_2015, c("SALARY", "HOURLY_RATE", "HOURLY_WORKWEEK", "AGE", "FAIR_PAY"))
-
-names(df_2015)
-names(df_2020)
-
 
 ```
 
 ```{r}
-# getting consistent gender labels
+### basic stats 
+```
+
+
+```{r}
+### getting consistent gender labels ###
 
 
 # is there a more elegant way to do this???
@@ -67,6 +73,33 @@ df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
 
 ```
 
+```{r}
+### sanity check for gender counts ###
+
+genderdist <- function(dat){
+  hist1 <- ggplot(dat, aes(x=GENDER)) +
+    geom_bar(stat="count", width=0.7, fill="steelblue")
+  return(hist1)
+}
+
+genderdist(df_2015)
+genderdist(df_2016)
+genderdist(df_2017)
+genderdist(df_2018)
+genderdist(df_2019)
+genderdist(df_2020)
+```
+
+
+
+```{r}
+# subsetting for numeric data only
+num2015 <- select_if(df_2015, c("SALARY", "HOURLY_RATE", "HOURLY_WORKWEEK", "AGE", "FAIR_PAY"))
+
+names(df_2015)
+names(df_2020)
+
+```
 
 
  
