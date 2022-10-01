@@ -22,3 +22,10 @@
 * rewrote comparison plot code for easy iteration and other variables
 
 </details>
+
+<details><summary><b>10/1/2022</b></summary>
+
+* checked for distribution of gender labels reported
+* checked counts for different years to see if # of survey respondants changed significantly (it did!)
+
+</details>
