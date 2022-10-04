@@ -19,37 +19,24 @@ library(ggExtra)
 
 # loading data
 load("allyears.RData")
-
-# chi-square quantile plot function, credit to JDRS
-#A function to make chi-square quantile plots 
-#to test for multivariate normality of data or residuals
-CSQPlot<-function(vars,label="Chi-Square Quantile Plot"){
-  #usually, vars is xxx$residuals or data from one group and label is for plot
-  x<-cov(scale(vars),use="pairwise.complete.obs")
-  squares<-sort(diag(as.matrix(scale(vars))%*%solve(x)%*%as.matrix(t(scale(vars)))))
-  quantiles<-quantile(squares)
-  hspr<-quantiles[4]-quantiles[2]
-  cumprob<-c(1:length(vars[,1]))/length(vars[,1])-1/(2*length(vars[,1]))
-  degf<-dim(x)[1]
-  quants<-qchisq(cumprob,df=degf)
-  gval<-(quants**(-1+degf/2))/(exp(quants/2)*gamma(degf/2)*(sqrt(2)**degf))
-  scale<-hspr / (qchisq(.75,degf)-qchisq(.25,degf))
-  se<-(scale/gval)*sqrt(cumprob*(1-cumprob)/length(squares))
-  lower<-quants-2*se
-  upper<-quants+2*se
-  
-  plot(quants,squares,col='red',pch=19,cex=1.2,xlab="Chi-Square Quantiles",
-       ylab="Squared MH Distance",main=paste("Chi-Square Quantiles for",label),ylim=range(upper,lower, squares) , xlim=range(c(0,quants)))
-  lines(c(0,100),c(0,100),col=1)
-  lines(quants,upper,col="blue",lty=2,lwd=2)
-  lines(quants,lower,col="blue",lty=2,lwd=2)
-  legend("topleft",c("Data","95% Conf Limits"),lty=c(0,2),col=c("red","blue"),lwd=c(2,2),
-         pch=c(19,NA))
-}
-#An example of usage of this function
-#CSQPlot(danielaaov$residuals,label="Daniela MANOVA Residuals")
 ```
 
+```{r}
+### sanity check for gender counts ###
+
+genderdist <- function(dat){
+  hist1 <- ggplot(dat, aes(x=GENDER)) +
+    geom_bar(stat="count", width=0.7, fill="steelblue")
+  return(hist1)
+}
+
+genderdist(df_2015)
+genderdist(df_2016)
+genderdist(df_2017)
+genderdist(df_2018)
+genderdist(df_2019)
+genderdist(df_2020)
+```
 
 Note: tests for multivariate normality must have shorter tables, should I
 just sample them?
@@ -68,6 +55,26 @@ cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
 
 Potentially useful (numeric) variables:
 SALARY, HOURLY_RATE, HOURLY_WORKWEEK, AGE, FAIR_PAY
+
+```{r}
+### response count stats
+nrow(df_2015)
+nrow(df_2016)
+nrow(df_2017)
+nrow(df_2018)
+nrow(df_2019)
+nrow(df_2020)
+# number of responses changes a lot! Is this an issue?
+
+### checking if there are duplicates within each year
+length(unique(df_2015$PID))-nrow(df_2015)
+length(unique(df_2016$PID))-nrow(df_2016)
+length(unique(df_2017$PID))-nrow(df_2017)
+length(unique(df_2018$PID))-nrow(df_2018)
+length(unique(df_2019$PID))-nrow(df_2019)
+length(unique(df_2020$PID))-nrow(df_2020)
+# no duplicates within year
+```
 
 ```{r}
 # trying to compare female to male
@@ -109,6 +116,33 @@ salaryhist(df_2020)
 ```
 
 ```{r}
-
+# chi-square quantile plot function, credit to JDRS
+#A function to make chi-square quantile plots 
+#to test for multivariate normality of data or residuals
+CSQPlot<-function(vars,label="Chi-Square Quantile Plot"){
+  #usually, vars is xxx$residuals or data from one group and label is for plot
+  x<-cov(scale(vars),use="pairwise.complete.obs")
+  squares<-sort(diag(as.matrix(scale(vars))%*%solve(x)%*%as.matrix(t(scale(vars)))))
+  quantiles<-quantile(squares)
+  hspr<-quantiles[4]-quantiles[2]
+  cumprob<-c(1:length(vars[,1]))/length(vars[,1])-1/(2*length(vars[,1]))
+  degf<-dim(x)[1]
+  quants<-qchisq(cumprob,df=degf)
+  gval<-(quants**(-1+degf/2))/(exp(quants/2)*gamma(degf/2)*(sqrt(2)**degf))
+  scale<-hspr / (qchisq(.75,degf)-qchisq(.25,degf))
+  se<-(scale/gval)*sqrt(cumprob*(1-cumprob)/length(squares))
+  lower<-quants-2*se
+  upper<-quants+2*se
+  
+  plot(quants,squares,col='red',pch=19,cex=1.2,xlab="Chi-Square Quantiles",
+       ylab="Squared MH Distance",main=paste("Chi-Square Quantiles for",label),ylim=range(upper,lower, squares) , xlim=range(c(0,quants)))
+  lines(c(0,100),c(0,100),col=1)
+  lines(quants,upper,col="blue",lty=2,lwd=2)
+  lines(quants,lower,col="blue",lty=2,lwd=2)
+  legend("topleft",c("Data","95% Conf Limits"),lty=c(0,2),col=c("red","blue"),lwd=c(2,2),
+         pch=c(19,NA))
+}
+#An example of usage of this function
+#CSQPlot(danielaaov$residuals,label="Daniela MANOVA Residuals")
 ```
 

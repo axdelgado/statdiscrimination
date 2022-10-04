@@ -9,13 +9,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 #working directory
+rm(list=ls())
 setwd("~/Yale/2022 Fall/Tobin RA")
 # packages
 library(tidyverse)
 library(readxl)
 ```
- 
-
+Reading in data:
 ```{r warning=FALSE}
 # loading in data
 df_2015 <- rbind(read_xlsx("data/2015.xlsx"), read_xlsx("data/2015b.xlsx"))
@@ -28,44 +28,6 @@ df_2019 <- rbind(read_xlsx("data/2019a.xlsx"),
                  read_xlsx("data/2019b.xlsx"),
                  read_xlsx("data/2019c.xlsx"))
 df_2020 <- read_xlsx("data/2020.xlsx")
-
-# saving data for easy loading next time
-# use load() to load data
-save(
-  df_2015,
-  df_2016,
-  df_2017,
-  df_2018,
-  df_2019,
-  df_2020,
-  file="allyears.RData"
-)
-
-# basic structure
-dim(df_2015)
-names(df_2015)
-str(df_2015)
-
-```
-
-```{r}
-### response count stats
-nrow(df_2015)
-nrow(df_2016)
-nrow(df_2017)
-nrow(df_2018)
-nrow(df_2019)
-nrow(df_2020)
-# number of responses changes a lot! Is this an issue?
-
-### checking if there are duplicates within each year
-length(unique(df_2015$PID))-nrow(df_2015)
-length(unique(df_2016$PID))-nrow(df_2016)
-length(unique(df_2017$PID))-nrow(df_2017)
-length(unique(df_2018$PID))-nrow(df_2018)
-length(unique(df_2019$PID))-nrow(df_2019)
-length(unique(df_2020$PID))-nrow(df_2020)
-# no duplicates within year
 ```
 
 
@@ -91,33 +53,21 @@ df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
 
 ```
 
+Writing a .RData file to streamline data loading in  data_analysis
 ```{r}
-### sanity check for gender counts ###
-
-genderdist <- function(dat){
-  hist1 <- ggplot(dat, aes(x=GENDER)) +
-    geom_bar(stat="count", width=0.7, fill="steelblue")
-  return(hist1)
-}
-
-genderdist(df_2015)
-genderdist(df_2016)
-genderdist(df_2017)
-genderdist(df_2018)
-genderdist(df_2019)
-genderdist(df_2020)
+# saving data for easy loading next time
+# use load() to load data
+save(
+  df_2015,
+  df_2016,
+  df_2017,
+  df_2018,
+  df_2019,
+  df_2020,
+  file="allyears.RData"
+)
 ```
 
-
-
-```{r}
-# subsetting for numeric data only
-num2015 <- select_if(df_2015, c("SALARY", "HOURLY_RATE", "HOURLY_WORKWEEK", "AGE", "FAIR_PAY"))
-
-names(df_2015)
-names(df_2020)
-
-```
 
 
  
