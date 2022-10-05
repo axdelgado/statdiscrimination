@@ -155,6 +155,31 @@ lapply(dfList, indhist)
 
 This is kind of messy, I'm not sure if we want to really get into the weeds with this yet.
 
+
+# Checking yrs exp
+
+```{r}
+exphist <- function(x){
+  hist1 <- ggplot(data=x, aes(x=YRS_EXP))+
+    geom_bar(stat="count", width=0.7, fill="steelblue")
+}
+hist(df_2015$YRS_EXP)
+lapply(dfList, exphist)
+```
+
+Some years have negative years of experience, we can remove those. Should we
+remove rows or just insert NA? I'll stick with NA for now.
+
+```{r}
+df_2019 <- df_2019 %>% 
+  mutate(YRS_EXP = replace(df_2019$YRS_EXP, df_2019$YRS_EXP < 0, NA))
+
+df_2020 <- df_2020 %>% 
+  mutate(YRS_EXP = replace(df_2020$YRS_EXP, df_2020$YRS_EXP < 0, NA))
+```
+
+Overall the spreads of work experience are right skewed, which makes sense.
+
 # Comparing F to M
 ```{r}
 # trying to compare female to male
