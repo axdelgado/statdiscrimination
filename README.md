@@ -2,7 +2,7 @@
 
 ## Details
 
-Here lives the data analysis codebase for Alvin Delgado's work for "Statistical Discrimination in the Pay-setting Process", a project led by Professor Laura Tobin of the Yale School of Management.
+Here lives the data analysis codebase for Alvin Delgado's work for "Statistical Discrimination in the Pay-setting Process", a Tobin RA project led by Professor Laura Adler of the Yale School of Management.
 
 ## Changelog
 
