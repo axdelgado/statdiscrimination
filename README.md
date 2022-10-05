@@ -68,7 +68,7 @@ Questions:
 
 </details>
 
-<details><summary><b>10/5/2022</b><summary>
+<details><summary><b>10/5/2022</b></summary>
 
 Updates to `data_analysis.Rmd`
 * Added histograms of `YRS_EXP`
