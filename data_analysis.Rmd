@@ -14,6 +14,7 @@ setwd("~/Yale/2022 Fall/Tobin RA")
 # loading packages
 library(readxl)
 library(tidyverse)
+library(lubridate)
 library(Hmisc)
 library(heplots)
 library(ggExtra)
@@ -179,6 +180,18 @@ df_2020 <- df_2020 %>%
 ```
 
 Overall the spreads of work experience are right skewed, which makes sense.
+
+
+# checking totalcomp spread
+```{r}
+salaryhist <- function(x){
+  hist1 <- ggplot(data=x, aes(x=TCC)) +
+    geom_density(fill = 'steelblue', alpha=0.75)
+}
+lapply(dfList, salaryhist)
+```
+
+There's a ton of outliers! We should make a cutoff for this. 
 
 # Comparing F to M
 ```{r}
