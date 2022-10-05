@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r message=FALSE}
 #working directory
 rm(list=ls())
 setwd("~/Yale/2022 Fall/Tobin RA")
@@ -33,7 +33,6 @@ df_2020 <- read_xlsx("data/2020.xlsx")
 
 ```{r}
 ### getting consistent gender labels ###
-
 
 # is there a more elegant way to do this???
 df_2015$GENDER[!(df_2015$GENDER %in% c("Female", "Male", NA))] <- "Other"
