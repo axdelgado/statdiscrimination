@@ -2,12 +2,13 @@
 title: "Untitled"
 output: html_document
 ---
+# Setup
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 # setting up environment
 setwd("~/Yale/2022 Fall/Tobin RA")
 # loading packages
@@ -19,11 +20,15 @@ library(ggExtra)
 
 # loading data
 load("allyears.RData")
+dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
 ```
 
+
+# Checking Counts
+
+## Checking Gender Counts
 ```{r}
 ### sanity check for gender counts ###
-
 genderdist <- function(dat){
   hist1 <- ggplot(dat, aes(x=GENDER)) +
     geom_bar(stat="count", width=0.7, fill="steelblue")
@@ -38,24 +43,11 @@ genderdist(df_2019)
 genderdist(df_2020)
 ```
 
-Note: tests for multivariate normality must have shorter tables, should I
-just sample them?
+There are a fairly even number of responses from both males and females across the years. It seems the proportion of "Other" resposnes has been slightly increasing. This could be due to better clarity for the option, shifts in social norms, or maybe better anti-discriminatory policy.
 
-```{r}
+There are many NAs, we should discuss what to do with these later.
 
-#CSQPlot(num2015) #error: not enough ram
-#heplots::cqplot(num2015)
-# library(QuantPsyc)
-# mult.norm(num2015)$mult.test
-# CSQPlot(sample_n(num2015,500))
-
-cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
-# interesting error - is it either salary or wage reported?
-```
-
-Potentially useful (numeric) variables:
-SALARY, HOURLY_RATE, HOURLY_WORKWEEK, AGE, FAIR_PAY
-
+## Checking unique responses
 ```{r}
 ### response count stats
 nrow(df_2015)
@@ -76,6 +68,94 @@ length(unique(df_2020$PID))-nrow(df_2020)
 # no duplicates within year
 ```
 
+There are no duplicates within each year.
+
+# Checking dates
+```{r}
+str(df_2015$UPDATE_DATE) 
+# already in a date format!!
+
+sum(is.na(df_2015$UPDATE_DATE))
+# no NAs across all years (I deleted code for this)
+
+# organizing dates by month
+df_2015$newdates <- floor_date(df_2015$UPDATE_DATE, unit = "month")
+df_2016$newdates <- floor_date(df_2016$UPDATE_DATE, unit = "month")
+df_2017$newdates <- floor_date(df_2017$UPDATE_DATE, unit = "month")
+df_2018$newdates <- floor_date(df_2018$UPDATE_DATE, unit = "month")
+df_2019$newdates <- floor_date(df_2019$UPDATE_DATE, unit = "month")
+df_2020$newdates <- floor_date(df_2020$UPDATE_DATE, unit = "month")
+
+
+# seeing how dates are dispersed, checking for weird ones
+date_hist <- function(x){
+  hist1 <- ggplot(data = x, aes(x = newdates)) +
+    geom_bar(stat = "count", fill="steelblue")
+  return(hist1)
+}
+
+date_hist(df_2015)
+date_hist(df_2016)
+date_hist(df_2017)
+date_hist(df_2018)
+date_hist(df_2019)
+date_hist(df_2020)
+```
+
+The first few years had some weird spreads of dates, I'll check these further individually.
+
+```{r}
+table(df_2015$newdates)
+```
+The dataframe for 2016 had survey response dates goinog all the way to december of 2017. I'm guessing we should remove these?
+
+```{r}
+table(df_2016$newdates)
+```
+
+The same is true for 2016.
+
+```{r}
+table(df_2017$newdates)
+```
+
+2017 had 2 extraneous dates from 2016. Weird.
+
+All in all, things seem to be mostly in order. 
+
+
+# Checking Industry
+
+```{r}
+dfList %>%
+    lapply(., function(x) sum(is.na(x$Industry))) %>%
+    unlist() /
+  (dfList %>%
+    lapply(., function(x) nrow(x)) %>%
+    unlist())
+```
+
+There's about 10-15% data on industry missing from each year.
+
+Let's see some breakdowns of these industries
+```{r}
+indhist <- function(x){
+  hist1 <- ggplot(data=x, aes(x=Industry)) +
+    geom_bar(stat="count", width=0.7, fill="steelblue")
+  return(hist1)
+}
+
+lapply(dfList, indhist)
+
+# for (i in 1:length(dfList)){
+#   df_iter <- dfList[i]
+#   table(df_iter$Industry)
+# }
+```
+
+This is kind of messy, I'm not sure if we want to really get into the weeds with this yet.
+
+# Comparing F to M
 ```{r}
 # trying to compare female to male
 p1 <- ggplot(data = df_2015) +
@@ -146,3 +226,17 @@ CSQPlot<-function(vars,label="Chi-Square Quantile Plot"){
 #CSQPlot(danielaaov$residuals,label="Daniela MANOVA Residuals")
 ```
 
+Note: tests for multivariate normality must have shorter tables, should I
+just sample them?
+
+```{r}
+
+#CSQPlot(num2015) #error: not enough ram
+#heplots::cqplot(num2015)
+# library(QuantPsyc)
+# mult.norm(num2015)$mult.test
+# CSQPlot(sample_n(num2015,500))
+
+cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
+# interesting error - is it either salary or wage reported?
+```
