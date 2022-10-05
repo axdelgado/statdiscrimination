@@ -37,8 +37,8 @@ Here lives the data analysis codebase for Alvin Delgado's work for "Statistical 
 
 <details><summary><b>10/3/2022</b></summary>
 
-    * Transormed date text field to date field with `lubridate`
-    * Reorganized how data is loaded, reshaped, and saved
-    * Moved some functions from the processing document to the analysis document
+* Transormed date text field to date field with `lubridate`
+* Reorganized how data is loaded, reshaped, and saved
+* Moved some functions from the processing document to the analysis document
 
 </details>
