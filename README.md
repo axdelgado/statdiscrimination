@@ -49,16 +49,21 @@ Updates to `data_analysis.Rmd`
 * Added new column to datasets to "round" data to current month
 * Drew histograms of date distributions to check for outliers
     * There were quite a few in 2015 and 2016!
+* Checked distribution of industries across responses
+* Added `dfList`, a list of the yearly dataframes, which makes iterating over years *much* easier.
 
 ---
 
 Notes:
 * Dates seem to be fairly uniformly distributed across the years, and there were only a few anomalies (see question below).
+* There's about 10-15% data on industry missing from each year. The spread is definitely not uniform.
+* For fun: go back and clean up plotmaking using `dfList` and `lapply()`
 
 ---
 
 Questions:
 * There are a lot of entries that have `NA` for gender, what should we do with these?
 * Should we just get rid of dates outside of the year each table is supposed to be from?
+* How should we continue exploring industry type, if at all?
 
 </details>
