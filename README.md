@@ -35,7 +35,7 @@ Here lives the data analysis codebase for Alvin Delgado's work for "Statistical 
 
 </details>
 
-<details><summary><b>10/3/2022</b></summary>
+<details><summary><b>10/4/2022</b></summary>
 
 Updates to `data_processing.Rmd`:
 * Transormed date text field to date field with `lubridate`
@@ -65,5 +65,18 @@ Questions:
 * There are a lot of entries that have `NA` for gender, what should we do with these?
 * Should we just get rid of dates outside of the year each table is supposed to be from?
 * How should we continue exploring industry type, if at all?
+
+</details>
+
+<details><summary><b>10/5/2022</b><summary>
+
+Updates to `data_analysis.Rmd`
+* Added histograms of `YRS_EXP`
+* Removed negative values for `YRS_EXP`
+
+---
+
+Questions:
+* Is it good practice to remove invalid data rows (e.g. neg values above), or just replace the invalid data entries with `NA`?
 
 </details>
