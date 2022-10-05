@@ -37,9 +37,28 @@ Here lives the data analysis codebase for Alvin Delgado's work for "Statistical 
 
 <details><summary><b>10/3/2022</b></summary>
 
-* Updates:
-    * Transormed date text field to date field with `lubridate`
-    * Reorganized how data is loaded, reshaped, and saved
-    * Moved some functions from the processing document to the analysis document
+Updates to `data_processing.Rmd`:
+* Transormed date text field to date field with `lubridate`
+* Reorganized how data is loaded, reshaped, and saved
+* Moved some functions from the processing document to the analysis document
+* Added functionality 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Added new column to datasets to "round" data to current month
+* Drew histograms of date distributions to check for outliers
+    * There were quite a few in 2015 and 2016!
+
+---
+
+Notes:
+* Dates seem to be fairly uniformly distributed across the years, and there were only a few anomalies (see question below).
+
+---
+
+Questions:
+* There are a lot of entries that have `NA` for gender, what should we do with these?
+* Should we just get rid of dates outside of the year each table is supposed to be from?
 
 </details>
