@@ -73,10 +73,17 @@ Questions:
 Updates to `data_analysis.Rmd`
 * Added histograms of `YRS_EXP`
 * Removed negative values for `YRS_EXP`
+* Checked distribution of total compensation
+
+---
+
+Notes:
+* There are a lot of high outliers for total compensation
 
 ---
 
 Questions:
 * Is it good practice to remove invalid data rows (e.g. neg values above), or just replace the invalid data entries with `NA`?
+* How should we be choosing to remove outliers in general?
 
 </details>
