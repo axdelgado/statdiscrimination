@@ -87,3 +87,33 @@ Questions:
 * How should we be choosing to remove outliers in general?
 
 </details>
+
+
+
+
+
+
+
+
+<details><summary><b>Update template</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
