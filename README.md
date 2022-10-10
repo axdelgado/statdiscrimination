@@ -90,7 +90,36 @@ Questions:
 
 
 
+<details><summary><b>10/9/2022</b></summary>
 
+Updates to `data_processing.Rmd`:
+* Cleaned `manager_relationship` var to be all numeric
+* Cleaned `fair_pay` var to be all numeric
+* Cleaned `employer_satisfaction` to be all numeric
+* Cleaned `fair_pay` to all be numeric
+* Started cleaning `phdyr_graduate`
+    * I should check over the excel sheets to see how to transform this (i.e. account for both years *and* "did not graduate")
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* A reminder from last meeting that the .xlsx for 2019 includes data from the first half of 2020
+* `Fair_pay` has almost only `NA` for 2015,2016, then about 25-33% `NA` for other years
+* `employer_satisfaction` is missing about half the data for 2019,2020. Even though the dataframes contain an incorrect period of data, these missing values seem consistent across both years. 
+* I am going to stop checking for missing data until I've successfully merged the datasets.
+* `manager_relationship`, `fair_pay`, `employer_satisfaction`, and `fair_pay` are all on a scale from 1-5 for "Strongly Disagree" to "Strongly Agree"
+
+---
+
+Questions:
+* 
+
+</details>
 
 
 
