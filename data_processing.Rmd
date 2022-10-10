@@ -15,7 +15,8 @@ setwd("~/Yale/2022 Fall/Tobin RA")
 library(tidyverse)
 library(readxl)
 ```
-Reading in data:
+
+# Reading data:
 ```{r warning=FALSE}
 # loading in data
 df_2015 <- rbind(read_xlsx("data/2015.xlsx"), read_xlsx("data/2015b.xlsx"))
@@ -30,7 +31,7 @@ df_2019 <- rbind(read_xlsx("data/2019a.xlsx"),
 df_2020 <- read_xlsx("data/2020.xlsx")
 ```
 
-
+# cleaning gender
 ```{r}
 ### getting consistent gender labels ###
 
@@ -52,7 +53,7 @@ df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
 
 ```
 
-Writing a .RData file to streamline data loading in  data_analysis
+Saving each individual year into a .RDaat
 ```{r}
 # saving data for easy loading next time
 # use load() to load data
@@ -67,6 +68,112 @@ save(
 )
 ```
 
+
+# Cleaning manager_relationship
+
+Note: a scale from Strongly Disagree to Strongly Agree
+```{r}
+# prepping data for merging
+df_2018$MANAGER_RELATIONSHIP <- as.numeric(substr(df_2018$MANAGER_RELATIONSHIP,1,1))
+df_2019$MANAGER_RELATIONSHIP <- as.numeric(substr(df_2019$MANAGER_RELATIONSHIP,1,1))
+df_2020$MANAGER_RELATIONSHIP <- as.numeric(substr(df_2020$MANAGER_RELATIONSHIP,1,1))
+```
+
+# Cleaning fair_pay
+
+Note: a scale from Strongly Disagree to Strongly Agree
+```{r}
+df_2018$FAIR_PAY <- as.numeric(substr(df_2018$FAIR_PAY,1,1))
+df_2019$FAIR_PAY <- as.numeric(substr(df_2019$FAIR_PAY,1,1))
+df_2020$FAIR_PAY <- as.numeric(substr(df_2020$FAIR_PAY,1,1))
+```
+
+
+```{r}
+nrow(df_2015)
+sum(is.na(df_2015$FAIR_PAY))
+
+nrow(df_2016)
+sum(is.na(df_2016$FAIR_PAY))
+
+nrow(df_2017)
+sum(is.na(df_2017$FAIR_PAY))
+
+nrow(df_2018)
+sum(is.na(df_2018$FAIR_PAY))
+
+nrow(df_2019)
+sum(is.na(df_2019$FAIR_PAY))
+
+nrow(df_2020)
+sum(is.na(df_2020$FAIR_PAY))
+
+
+
+summary(df_2016$FAIR_PAY)
+barchart(df_2015$FAIR_PAY)
+```
+
+Note: almost all data for fair_pay is missing in 2015 & 2016. 
+
+# Cleaning employer_satisfaction
+
+Note: a scale from Strongly Disagree to Strongly Agree
+```{r}
+df_2018$EMPLOYER_SATISFACTION <- as.numeric(substr(df_2018$EMPLOYER_SATISFACTION,1,1))
+df_2019$EMPLOYER_SATISFACTION <- as.numeric(substr(df_2019$EMPLOYER_SATISFACTION,1,1))
+df_2020$EMPLOYER_SATISFACTION <- as.numeric(substr(df_2020$EMPLOYER_SATISFACTION,1,1))
+```
+
+
+```{r}
+nrow(df_2015)
+sum(is.na(df_2015$EMPLOYER_SATISFACTION))
+
+nrow(df_2016)
+sum(is.na(df_2016$EMPLOYER_SATISFACTION))
+
+nrow(df_2017)
+sum(is.na(df_2017$EMPLOYER_SATISFACTION))
+
+nrow(df_2018)
+sum(is.na(df_2018$EMPLOYER_SATISFACTION))
+
+nrow(df_2019)
+sum(is.na(df_2019$EMPLOYER_SATISFACTION))
+
+nrow(df_2020)
+sum(is.na(df_2020$EMPLOYER_SATISFACTION))
+```
+
+# Cleaning transparent_pay
+```{r}
+# pre-transformation barcharts to make sure I didn't mess up
+barchart(df_2018$TRANSPARENT_PAY)
+barchart(df_2019$TRANSPARENT_PAY)
+barchart(df_2020$TRANSPARENT_PAY)
+```
+
+```{r}
+# applying transformations
+df_2018$TRANSPARENT_PAY <- as.numeric(substr(df_2018$TRANSPARENT_PAY,1,1))
+df_2019$TRANSPARENT_PAY <- as.numeric(substr(df_2019$TRANSPARENT_PAY,1,1))
+df_2020$TRANSPARENT_PAY <- as.numeric(substr(df_2020$TRANSPARENT_PAY,1,1))
+
+# post transformation barcharts
+barchart(as.factor(df_2018$TRANSPARENT_PAY))
+barchart(as.factor(df_2019$TRANSPARENT_PAY))
+barchart(as.factor(df_2020$TRANSPARENT_PAY))
+```
+
+```{r}
+df_2018$PHDYR_GRADUATED <- # need to account for did not graduate, look more at data struc
+```
+
+# Binding all rows
+```{r}
+alldata <- bind_rows(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
+```
 
 
  
