@@ -14,6 +14,7 @@ setwd("~/Yale/2022 Fall/Tobin RA")
 # packages
 library(tidyverse)
 library(readxl)
+library(lattice)
 ```
 
 # Reading data:
@@ -53,20 +54,6 @@ df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
 
 ```
 
-Saving each individual year into a .RDaat
-```{r}
-# saving data for easy loading next time
-# use load() to load data
-save(
-  df_2015,
-  df_2016,
-  df_2017,
-  df_2018,
-  df_2019,
-  df_2020,
-  file="allyears.RData"
-)
-```
 
 
 # Cleaning manager_relationship
@@ -166,15 +153,48 @@ barchart(as.factor(df_2019$TRANSPARENT_PAY))
 barchart(as.factor(df_2020$TRANSPARENT_PAY))
 ```
 
+
+# Cleaning phdyr_graduated
 ```{r}
-df_2018$PHDYR_GRADUATED <- # need to account for did not graduate, look more at data struc
+df_2018$PHDYR_GRADUATED <- as.factor(df_2018$PHDYR_GRADUATED)
+df_2019$PHDYR_GRADUATED <- as.factor(df_2019$PHDYR_GRADUATED)
+df_2020$PHDYR_GRADUATED <- as.factor(df_2020$PHDYR_GRADUATED)
+# need to account for did not graduate, look more at data struc
+```
+
+# Cleaning mbayr_graduated
+```{r}
+df_2018$MBAYR_GRADUATED <- as.factor(df_2018$MBAYR_GRADUATED)
+df_2019$MBAYR_GRADUATED <- as.factor(df_2019$MBAYR_GRADUATED)
+df_2020$MBAYR_GRADUATED <- as.factor(df_2020$MBAYR_GRADUATED)
 ```
 
 # Binding all rows
 ```{r}
 alldata <- bind_rows(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
+str(alldata)
+```
+
+# Savind data into a .RData and .csv
+```{r}
+save(alldata, file = "alldata.Rdata") #filesize ~ 0.12 GB
+# write.csv(alldata, "alldata.csv") filesize ~ 1.2 GB, yikes!
 ```
 
 
+```{r}
+######### unnecessary code chunk, leaving for reference
+# saving data for easy loading next time
+# use load() to load data
+# save(
+#   df_2015,
+#   df_2016,
+#   df_2017,
+#   df_2018,
+#   df_2019,
+#   df_2020,
+#   file="allyears.RData"
+# )
+```
  
  
