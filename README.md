@@ -123,6 +123,41 @@ Questions:
 
 
 
+<details><summary><b>10/10/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* Cleaned `phdyr_graduate` - turned into a factor
+* Cleaned `mbayr_graduate` - turned into a factor
+* Merged all years' datasets into one master called `alldata`
+* Saved `alldata` as easily loadable .RData and .csv files for ingesting into `data_analysis`
+* Removed code for saving each year's dataset individually to a .RData file
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
+
+
+
+
 
 <details><summary><b>Update template</b></summary>
 
