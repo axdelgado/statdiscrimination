@@ -20,8 +20,10 @@ library(heplots)
 library(ggExtra)
 
 # loading data
+load("alldata.RData")
 load("allyears.RData")
 dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
+
 ```
 
 
@@ -36,12 +38,18 @@ genderdist <- function(dat){
   return(hist1)
 }
 
-genderdist(df_2015)
-genderdist(df_2016)
-genderdist(df_2017)
-genderdist(df_2018)
-genderdist(df_2019)
-genderdist(df_2020)
+# genderdist(df_2015)
+# genderdist(df_2016)
+# genderdist(df_2017)
+# genderdist(df_2018)
+# genderdist(df_2019)
+# genderdist(df_2020)
+
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(genderdist(iter))
+}
+
 ```
 
 There are a fairly even number of responses from both males and females across the years. It seems the proportion of "Other" resposnes has been slightly increasing. This could be due to better clarity for the option, shifts in social norms, or maybe better anti-discriminatory policy.
@@ -73,51 +81,54 @@ There are no duplicates within each year.
 
 # Checking dates
 ```{r}
-str(df_2015$UPDATE_DATE) 
+str(alldata$UPDATE_DATE) 
 # already in a date format!!
 
-sum(is.na(df_2015$UPDATE_DATE))
+sum(is.na(alldata$UPDATE_DATE))
 # no NAs across all years (I deleted code for this)
 
 # organizing dates by month
-df_2015$newdates <- floor_date(df_2015$UPDATE_DATE, unit = "month")
-df_2016$newdates <- floor_date(df_2016$UPDATE_DATE, unit = "month")
-df_2017$newdates <- floor_date(df_2017$UPDATE_DATE, unit = "month")
-df_2018$newdates <- floor_date(df_2018$UPDATE_DATE, unit = "month")
-df_2019$newdates <- floor_date(df_2019$UPDATE_DATE, unit = "month")
-df_2020$newdates <- floor_date(df_2020$UPDATE_DATE, unit = "month")
+# df_2015$newdates <- floor_date(df_2015$UPDATE_DATE, unit = "month")
+# df_2016$newdates <- floor_date(df_2016$UPDATE_DATE, unit = "month")
+# df_2017$newdates <- floor_date(df_2017$UPDATE_DATE, unit = "month")
+# df_2018$newdates <- floor_date(df_2018$UPDATE_DATE, unit = "month")
+# df_2019$newdates <- floor_date(df_2019$UPDATE_DATE, unit = "month")
+# df_2020$newdates <- floor_date(df_2020$UPDATE_DATE, unit = "month")
 
 
 # seeing how dates are dispersed, checking for weird ones
 date_hist <- function(x){
-  hist1 <- ggplot(data = x, aes(x = newdates)) +
-    geom_bar(stat = "count", fill="steelblue")
+  hist1 <- ggplot(data = x, aes(x = floor_date(UPDATE_DATE, unit = "month"))) +
+    geom_bar(stat = "count", fill="steelblue") 
   return(hist1)
 }
 
-date_hist(df_2015)
-date_hist(df_2016)
-date_hist(df_2017)
-date_hist(df_2018)
-date_hist(df_2019)
-date_hist(df_2020)
+
+
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  iterhist <- date_hist(iter) + 
+    xlab(as.character(c(2015:2020)[i]))
+  print(iterhist)
+}
 ```
 
 The first few years had some weird spreads of dates, I'll check these further individually.
 
 ```{r}
-table(df_2015$newdates)
+#table(df_2015$newdates)
 ```
+
 The dataframe for 2016 had survey response dates goinog all the way to december of 2017. I'm guessing we should remove these?
 
 ```{r}
-table(df_2016$newdates)
+#table(df_2016$newdates)
 ```
 
 The same is true for 2016.
 
 ```{r}
-table(df_2017$newdates)
+#table(df_2017$newdates)
 ```
 
 2017 had 2 extraneous dates from 2016. Weird.
@@ -128,12 +139,15 @@ All in all, things seem to be mostly in order.
 # Checking Industry
 
 ```{r}
-dfList %>%
-    lapply(., function(x) sum(is.na(x$Industry))) %>%
-    unlist() /
-  (dfList %>%
-    lapply(., function(x) nrow(x)) %>%
-    unlist())
+# dfList %>%
+#     lapply(., function(x) sum(is.na(x$Industry))) %>%
+#     unlist() /
+#   (dfList %>%
+#     lapply(., function(x) nrow(x)) %>%
+#     unlist())
+
+sum(is.na(alldata$Industry)) / nrow(alldata)
+# about 12% missing data
 ```
 
 There's about 10-15% data on industry missing from each year.
@@ -147,11 +161,6 @@ indhist <- function(x){
 }
 
 lapply(dfList, indhist)
-
-# for (i in 1:length(dfList)){
-#   df_iter <- dfList[i]
-#   table(df_iter$Industry)
-# }
 ```
 
 This is kind of messy, I'm not sure if we want to really get into the weeds with this yet.
@@ -164,19 +173,11 @@ exphist <- function(x){
   hist1 <- ggplot(data=x, aes(x=YRS_EXP))+
     geom_bar(stat="count", width=0.7, fill="steelblue")
 }
-hist(df_2015$YRS_EXP)
-lapply(dfList, exphist)
-```
 
-Some years have negative years of experience, we can remove those. Should we
-remove rows or just insert NA? I'll stick with NA for now.
-
-```{r}
-df_2019 <- df_2019 %>% 
-  mutate(YRS_EXP = replace(df_2019$YRS_EXP, df_2019$YRS_EXP < 0, NA))
-
-df_2020 <- df_2020 %>% 
-  mutate(YRS_EXP = replace(df_2020$YRS_EXP, df_2020$YRS_EXP < 0, NA))
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(exphist(iter))
+}
 ```
 
 Overall the spreads of work experience are right skewed, which makes sense.
@@ -278,3 +279,12 @@ just sample them?
 cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
 # interesting error - is it either salary or wage reported?
 ```
+
+
+# Location State
+```{r}
+table(alldata$LOCATION_STATE)
+
+```
+A possible cool way to plot state data, probably not necessary
+https://urban-institute.medium.com/how-to-create-state-and-county-maps-easily-in-r-577d29300bb2
