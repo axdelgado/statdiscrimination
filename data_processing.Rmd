@@ -55,6 +55,13 @@ df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
 ```
 
 
+# Cleaning yrs_exp
+
+```{r}
+# replacing negative values with NA
+alldata <- alldata %>% 
+  mutate(YRS_EXP = replace(alldata$YRS_EXP, alldata$YRS_EXP < 0, NA))
+```
 
 # Cleaning manager_relationship
 
@@ -174,6 +181,15 @@ df_2020$MBAYR_GRADUATED <- as.factor(df_2020$MBAYR_GRADUATED)
 alldata <- bind_rows(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
 str(alldata)
 ```
+
+# Checking TCC
+```{r}
+describe(alldata$TCC)
+ggplot(data=alldata) +
+  geom_density(aes(x=TCC), fill = 'steelblue', alpha = 0.7) +
+  xlim(c(0,401622))
+```
+
 
 # Savind data into a .RData and .csv
 ```{r}
