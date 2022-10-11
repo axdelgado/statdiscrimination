@@ -13,12 +13,29 @@ Here lives the data analysis codebase for Alvin Delgado's work for "Statistical 
 
 </details>
 
+
+
+
+
+
+
+
+
+
 <details><summary><b>9/27/2022</b></summary>
 
 * added function for chi-square quantile plotting (ran into many errors with size of data)
 * created basic comparison plots between genders for pay (ran into issues with factors)
 
 </details>
+
+
+
+
+
+
+
+
 
 <details><summary><b>9/28/2022</b></summary>
 
@@ -27,6 +44,13 @@ Here lives the data analysis codebase for Alvin Delgado's work for "Statistical 
 
 </details>
 
+
+
+
+
+
+
+
 <details><summary><b>10/1/2022</b></summary>
 
 * checked for distribution of gender labels reported
@@ -34,6 +58,15 @@ Here lives the data analysis codebase for Alvin Delgado's work for "Statistical 
 * checked to see if there are any repeat responses in each year
 
 </details>
+
+
+
+
+
+
+
+
+
 
 <details><summary><b>10/4/2022</b></summary>
 
@@ -68,6 +101,13 @@ Questions:
 
 </details>
 
+
+
+
+
+
+
+
 <details><summary><b>10/5/2022</b></summary>
 
 Updates to `data_analysis.Rmd`
@@ -87,6 +127,11 @@ Questions:
 * How should we be choosing to remove outliers in general?
 
 </details>
+
+
+
+
+
 
 
 
@@ -123,6 +168,11 @@ Questions:
 
 
 
+
+
+
+
+
 <details><summary><b>10/10/2022</b></summary>
 
 Updates to `data_processing.Rmd`:
@@ -131,6 +181,7 @@ Updates to `data_processing.Rmd`:
 * Merged all years' datasets into one master called `alldata`
 * Saved `alldata` as easily loadable .RData and .csv files for ingesting into `data_analysis`
 * Removed code for saving each year's dataset individually to a .RData file
+* Added code to sanity check `TCC`
 
 ---
 
@@ -140,17 +191,43 @@ Updates to `data_analysis.Rmd`
 ---
 
 Notes:
-* 
-
----
-
-Questions:
-* 
+* According to [DQYDJ](https://dqydj.com/average-median-top-individual-income-percentiles/), the 99th percentile of income was $401,622, while in 2020 it was $357,552.
+    * Note: this site used BLS data, but I wasn't sure if I should have calculated this myself, or gotten an academic source. [This](https://data.bls.gov/cgi-bin/surveymost?ce) might be a good alternative to do it by hand.
+* `TCC` didn't seem to have any people who reported hourly wages as total compensation (min was about 4400)
+    * cool observation: there's spikes at every $1000
 
 </details>
 
 
 
+
+
+
+
+
+
+<details><summary><b>10/11/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* updated code to work with the merged dataframe `alldata`
+
+---
+
+Updates to `data_analysis.Rmd`
+* Cleaned `yrs_exp` - made negative values NA
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* How was the original data formatted? I was wondering about why some years have about 500-1000 entries from the next year
+
+
+</details>
 
 
 
