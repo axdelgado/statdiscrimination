@@ -84,7 +84,6 @@ There are no duplicates within each year.
 str(alldata$UPDATE_DATE) 
 # already in a date format!!
 
-sum(is.na(alldata$UPDATE_DATE))
 # no NAs across all years (I deleted code for this)
 
 # organizing dates by month
@@ -150,7 +149,7 @@ sum(is.na(alldata$Industry)) / nrow(alldata)
 # about 12% missing data
 ```
 
-There's about 10-15% data on industry missing from each year.
+About 12% of data for Industry is missing.
 
 Let's see some breakdowns of these industries
 ```{r}
@@ -160,18 +159,18 @@ indhist <- function(x){
   return(hist1)
 }
 
-lapply(dfList, indhist)
+sort(table(alldata$Industry))
+sum(is.na(alldata$Industry)) / nrow(alldata)
 ```
 
-This is kind of messy, I'm not sure if we want to really get into the weeds with this yet.
-
+This is kind of messy, I'm not sure if we want to really get into the weeds with this yet. 
 
 # Checking yrs exp
 
 ```{r}
 exphist <- function(x){
   hist1 <- ggplot(data=x, aes(x=YRS_EXP))+
-    geom_bar(stat="count", width=0.7, fill="steelblue")
+    geom_density(stat="count", alpha=0.6, fill="steelblue")
 }
 
 for (i in 1:length(2015:2020)){
@@ -187,12 +186,17 @@ Overall the spreads of work experience are right skewed, which makes sense.
 ```{r}
 salaryhist <- function(x){
   hist1 <- ggplot(data=x, aes(x=TCC)) +
-    geom_density(fill = 'steelblue', alpha=0.75)
+    geom_density(fill = 'steelblue', alpha=0.75) +
+    xlim(c(0,401622))
 }
-lapply(dfList, salaryhist)
+
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(salaryhist(iter))
+}
 ```
 
-There's a ton of outliers! We should make a cutoff for this. 
+There's a ton of outliers! We should make a cutoff for this. I've set it to 401,622, the 99th percentile income in 2020.
 
 # Comparing F to M
 ```{r}
@@ -210,29 +214,33 @@ p1 <- ggplot(data = df_2015) +
 # p2 <- ggMarginal(p1, groupFill = TRUE, margins = "y") 
 
 # overlaid histogram for salary vs gender
-salaryhist <- function(x){
+salaryhist2 <- function(x){
   x %>%
-  filter(!is.na(GENDER)) %>%
+    filter(!is.na(GENDER)) %>%
   ggplot() +
-    geom_density(aes(x = SALARY, fill = GENDER),
+    geom_density(aes(x = TCC, fill = GENDER),
                  alpha=0.25) + 
     theme(legend.position = c(0.1, .73), # adding legend
           plot.title = element_text(vjust = 0.25)) + # moving title
     xlim(c(0,200000)) +
-    theme_bw() +
+    theme_minimal() +
     ylim(0, 3.5 * 10 ** (-5)) +
     scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8"))
 }
 
-salaryhist(df_2015)
-salaryhist(df_2016)
-salaryhist(df_2017)
-salaryhist(df_2018)
-salaryhist(df_2019)
-salaryhist(df_2020)
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(salaryhist2(iter))
+}
 
 # note: need to normalize gender categories in data processing
+table(filter(df_2016, year(df_2016$UPDATE_DATE) == 2016)$GENDER)
+sum(is.na(filter(alldata,year(alldata$UPDATE_DATE)==2016)$TCC))
+nrow(filter(alldata,year(alldata$UPDATE_DATE)==2016))
 ```
+
+
+
 
 ```{r}
 # chi-square quantile plot function, credit to JDRS
