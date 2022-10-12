@@ -181,14 +181,24 @@ for (i in 1:length(2015:2020)){
 
 Overall the spreads of work experience are right skewed, which makes sense.
 
+# Checking hourly_rate
+```{r}
+describe(alldata$HOURLY_RATE)
+quantile(alldata$HOURLY_RATE, .99, na.rm=TRUE)
+```
+# 95th, 99th percentile makes sense, there are a few outliers that may be from very heavily salaried employees.
 
-# checking totalcomp spread
+# checking TCC spread
 ```{r}
 salaryhist <- function(x){
   hist1 <- ggplot(data=x, aes(x=TCC)) +
     geom_density(fill = 'steelblue', alpha=0.75) +
     xlim(c(0,401622))
 }
+
+#sample stats
+describe(alldata$TCC)
+quantile(alldata$TCC, 0.99, na.rm = TRUE)
 
 for (i in 1:length(2015:2020)){
   iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
@@ -198,7 +208,7 @@ for (i in 1:length(2015:2020)){
 
 There's a ton of outliers! We should make a cutoff for this. I've set it to 401,622, the 99th percentile income in 2020.
 
-# Comparing F to M
+# TCC by gender
 ```{r}
 # trying to compare female to male
 p1 <- ggplot(data = df_2015) +
@@ -218,7 +228,7 @@ salaryhist2 <- function(x){
   x %>%
     filter(!is.na(GENDER)) %>%
   ggplot() +
-    geom_density(aes(x = TCC, fill = GENDER),
+    geom_density(aes(x = TCC, fill = GENDER), #TCC has much less NA than salary
                  alpha=0.25) + 
     theme(legend.position = c(0.1, .73), # adding legend
           plot.title = element_text(vjust = 0.25)) + # moving title
@@ -233,12 +243,18 @@ for (i in 1:length(2015:2020)){
   print(salaryhist2(iter))
 }
 
-# note: need to normalize gender categories in data processing
-table(filter(df_2016, year(df_2016$UPDATE_DATE) == 2016)$GENDER)
-sum(is.na(filter(alldata,year(alldata$UPDATE_DATE)==2016)$TCC))
-nrow(filter(alldata,year(alldata$UPDATE_DATE)==2016))
 ```
 
+# Educ by gender
+```{r}
+table(alldata$EDU_LVL)
+
+ggplot(alldata, aes(fill=GENDER, x=Industry)) + 
+    geom_bar( stat="count")
+
+alldata %>% group_by(Industry, GENDER) %>% summarise(n=n())
+# better in console
+```
 
 
 
