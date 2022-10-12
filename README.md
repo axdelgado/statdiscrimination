@@ -193,6 +193,7 @@ Updates to `data_analysis.Rmd`
 Notes:
 * According to [DQYDJ](https://dqydj.com/average-median-top-individual-income-percentiles/), the 99th percentile of income was $401,622, while in 2020 it was $357,552.
     * Note: this site used BLS data, but I wasn't sure if I should have calculated this myself, or gotten an academic source. [This](https://data.bls.gov/cgi-bin/surveymost?ce) might be a good alternative to do it by hand.
+    * The 99th percentile of `TCC` in our data was 212500
 * `TCC` didn't seem to have any people who reported hourly wages as total compensation (min was about 4400)
     * cool observation: there's spikes at every $1000
 * Strange: there are only 3 "other" responses to gender in 2016.
@@ -222,6 +223,8 @@ Updates to `data_analysis.Rmd`
 
 Notes:
 * There's about 12% missing data for `Industry`
+* There's some pretty stark differenes in industry by gender in traditionally gendered roles (e.g. education, construction, and healthcare/social assistance)
+* 
 
 ---
 
