@@ -195,6 +195,7 @@ Notes:
     * Note: this site used BLS data, but I wasn't sure if I should have calculated this myself, or gotten an academic source. [This](https://data.bls.gov/cgi-bin/surveymost?ce) might be a good alternative to do it by hand.
 * `TCC` didn't seem to have any people who reported hourly wages as total compensation (min was about 4400)
     * cool observation: there's spikes at every $1000
+* Strange: there are only 3 "other" responses to gender in 2016.
 
 </details>
 
@@ -215,11 +216,12 @@ Updates to `data_processing.Rmd`:
 
 Updates to `data_analysis.Rmd`
 * Cleaned `yrs_exp` - made negative values NA
+* Fixed `salary` graphs by gender, switched `salary` with `TCC` b/c less missing data.\
 
 ---
 
 Notes:
-* 
+* There's about 12% missing data for `Industry`
 
 ---
 
