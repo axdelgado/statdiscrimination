@@ -34,7 +34,8 @@ dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
 ### sanity check for gender counts ###
 genderdist <- function(dat){
   hist1 <- ggplot(dat, aes(x=GENDER)) +
-    geom_bar(stat="count", width=0.7, fill="steelblue")
+    geom_bar(stat="count", width=0.7, fill="steelblue") +
+    theme(aspect.ratio=0.7)
   return(hist1)
 }
 
@@ -186,9 +187,9 @@ Overall the spreads of work experience are right skewed, which makes sense.
 describe(alldata$HOURLY_RATE)
 quantile(alldata$HOURLY_RATE, .99, na.rm=TRUE)
 ```
-# 95th, 99th percentile makes sense, there are a few outliers that may be from very heavily salaried employees.
+95th, 99th percentile makes sense, there are a few outliers that may be from very heavily salaried employees.
 
-# checking TCC spread
+# Checking TCC spread
 ```{r}
 salaryhist <- function(x){
   hist1 <- ggplot(data=x, aes(x=TCC)) +
@@ -208,21 +209,10 @@ for (i in 1:length(2015:2020)){
 
 There's a ton of outliers! We should make a cutoff for this. I've set it to 401,622, the 99th percentile income in 2020.
 
-# TCC by gender
+# Gender Comparisons
+
+## TCC by gender
 ```{r}
-# trying to compare female to male
-p1 <- ggplot(data = df_2015) +
-        geom_boxplot(aes(x = GENDER, y = SALARY, col = GENDER),
-                    width = 0.1) + # jittered
-        theme(legend.position = c(0.1, .73), # adding legend
-              plot.title = element_text(vjust = 0.25) # moving title
-              ) +
-        ylim(c(0, 250000)) +
-  theme_bw()
-
-# adding marginal histograms to scatterplot, not nec for box    
-# p2 <- ggMarginal(p1, groupFill = TRUE, margins = "y") 
-
 # overlaid histogram for salary vs gender
 salaryhist2 <- function(x){
   x %>%
@@ -231,11 +221,12 @@ salaryhist2 <- function(x){
     geom_density(aes(x = TCC, fill = GENDER), #TCC has much less NA than salary
                  alpha=0.25) + 
     theme(legend.position = c(0.1, .73), # adding legend
-          plot.title = element_text(vjust = 0.25)) + # moving title
+          plot.title = element_text(vjust = 0.25),
+          aspect.ratio = 0.75) + # moving title
     xlim(c(0,200000)) +
     theme_minimal() +
     ylim(0, 3.5 * 10 ** (-5)) +
-    scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8"))
+    scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8")) 
 }
 
 for (i in 1:length(2015:2020)){
@@ -245,16 +236,110 @@ for (i in 1:length(2015:2020)){
 
 ```
 
-# Educ by gender
+## Industry by gender
 ```{r}
-table(alldata$EDU_LVL)
+# industry breakdown across all year
+table(alldata$Industry, alldata$GENDER)
 
-ggplot(alldata, aes(fill=GENDER, x=Industry)) + 
-    geom_bar( stat="count")
+#breakdown across multiple years
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(table(iter$Industry, iter$GENDER))
+}
+sort(unique(alldata$Industry))
 
-alldata %>% group_by(Industry, GENDER) %>% summarise(n=n())
-# better in console
+# add horiz barplot, use naics codes only
 ```
+
+## Management by gender
+```{r}
+table(alldata$MGMT_ROLE, alldata$GENDER)
+
+ggplot(data=df2, aes(x=dose, y=len, fill=supp)) +
+  geom_bar(stat="identity")
+
+alldata %>% filter(MGMT_ROLE == "Management Role") %>%
+  ggplot(aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
+    geom_bar(stat="identity",aes(fill=GENDER)) + 
+    ggtitle("management role by gender")
+
+
+alldata %>% filter(MGMT_ROLE == "Management Role") %>%
+  ggplot(aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
+    geom_col(aes(fill=GENDER), position = "fill") + 
+    ggtitle("management role by gender") #+
+    #ylim(c(0,1.2))
+
+# another way for a single year
+barplot(prop.table(table(alldata$MGMT_ROLE, alldata$GENDER), margin=2))
+
+
+# ggplot(alldata, aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
+#   geom_bar(stat = "identity",aes(fill=GENDER))
+```
+ 
+
+## Educ by gender
+```{r}
+table(alldata$EDU_LVL, alldata$GENDER)
+```
+
+Pretty even spread! Females tend to get more associate's, health doctorate, 
+master's, and certificates than men. This may be due to more women responding
+to the survey, though. Let's maybe try to find a better measure of this (e.g.
+by proportion).
+
+```{r}
+round(prop.table(table(alldata$EDU_LVL, alldata$GENDER), margin = 2),5)
+```
+
+These seem more balanced, but the above differences seem to still persist.
+
+Let's observe any changes over time
+
+```{r}
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(round(prop.table(table(iter$EDU_LVL, iter$GENDER),margin=1),6))
+}
+```
+
+## Age by gender
+```{r}
+agehist <- function(x){
+  x %>%
+    filter(!is.na(GENDER) & GENDER %in% c("Female", "Male")) %>% # remove NAs
+  ggplot() +
+    geom_density(aes(x = AGE, fill = GENDER), 
+                 alpha=0.25) + 
+    theme(legend.position = c(0.1, .73), # adding legend
+          plot.title = element_text(vjust = 0.25),
+          aspect.ratio = 0.75) + # moving title
+    theme_minimal() +
+    scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8")) 
+}
+
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(agehist(iter))
+}
+```
+ 
+ Ages are pretty left skewed, which we can take into account when considering
+ external effects of broader trends.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -307,8 +392,7 @@ cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
 
 # Location State
 ```{r}
-table(alldata$LOCATION_STATE)
-
+sort(prop.table(table(alldata$LOCATION_STATE)))
 ```
 A possible cool way to plot state data, probably not necessary
 https://urban-institute.medium.com/how-to-create-state-and-county-maps-easily-in-r-577d29300bb2
