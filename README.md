@@ -246,17 +246,24 @@ Updates to `data_processing.Rmd`:
 ---
 
 Updates to `data_analysis.Rmd`
-* 
+* Compared Industry by Gender (tables, barplots)
+* Compared Management by gender
+* Compared education by gender (tables, barplots)
+* Compared age by gender
 
 ---
 
 Notes:
-* 
+* There aren't huge differences between education level and gender
+    * Minor differences: larger proportions of women obtain associate's, health profession, master's, and non-degree certificates comapred to men
+    * Men obtained more GED/high school diplomas (does this make sense), MBAs, and PHDs compared to women.
+* There is a narrowing of the proportion of management positions held by men and women over time
+* Majority of responses are from young people - this might affect broader trends we see?
 
 ---
 
 Questions:
-* 
+* How might patterns or trends in our data effect future analyses?
 
 </details>
 
