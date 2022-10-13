@@ -250,6 +250,7 @@ Updates to `data_analysis.Rmd`
 * Compared Management by gender
 * Compared education by gender (tables, barplots)
 * Compared age by gender
+* Calculated proportional data across states and cities
 
 ---
 
