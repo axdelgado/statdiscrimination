@@ -390,9 +390,18 @@ cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
 ```
 
 
-# Location State
+# States and Cities
 ```{r}
-sort(prop.table(table(alldata$LOCATION_STATE)))
+sort(prop.table(table(alldata$LOCATION_STATE)), TRUE)
 ```
-A possible cool way to plot state data, probably not necessary
+A good mix of SHB and non-SHB states
+
+A possible cool way to plot state data, probably not necessary (maybe a side proj)
 https://urban-institute.medium.com/how-to-create-state-and-county-maps-easily-in-r-577d29300bb2
+
+
+```{r}
+head(sort(prop.table(table(alldata$LOCATION_CITY)),TRUE),15)
+```
+
+Here's the 15 most prominent ccities in our dataset. 
