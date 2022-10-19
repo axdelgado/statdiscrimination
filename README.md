@@ -275,7 +275,38 @@ Questions:
 
 
 
+<details><summary><b>Week of 10/17</b></summary>
 
+Updates to `data_processing.Rmd`:
+* Created tables of highest paying occupations (`onet_broad`)
+    * Filtered dataset to exclude data higher than the 2020 99th percentile in individual
+    income
+* Reordered commands for efficiency
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* The majority of outliers are chief executives, physicians, lawyers, operations 
+managers, sales managers, financial analysts, and management analysts. This is when we filter data
+higher than the 2020 99th percentile, 401622 (see above for source)
+    * Since these jobs are fairly similar, I decided to just filter based on the 
+    99th percentile alone. Even if we end up choosing another year's 99th percentile
+    to do a cutoff, the types of employees that would be excluded from our data would be 
+    more or less from the same crowd. 
+
+
+---
+
+Questions:
+* 
+
+</details>
 
 
 
