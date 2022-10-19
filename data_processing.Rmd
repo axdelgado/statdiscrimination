@@ -15,6 +15,7 @@ setwd("~/Yale/2022 Fall/Tobin RA")
 library(tidyverse)
 library(readxl)
 library(lattice)
+library(Hmisc)
 ```
 
 # Reading data:
@@ -34,6 +35,10 @@ df_2020 <- read_xlsx("data/2020.xlsx")
 
 # cleaning gender
 ```{r}
+table(df_2015$GENDER)
+```
+
+```{r}
 ### getting consistent gender labels ###
 
 # is there a more elegant way to do this???
@@ -52,15 +57,6 @@ df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
 # 
 # table(df_2015$GENDER)
 
-```
-
-
-# Cleaning yrs_exp
-
-```{r}
-# replacing negative values with NA
-alldata <- alldata %>% 
-  mutate(YRS_EXP = replace(alldata$YRS_EXP, alldata$YRS_EXP < 0, NA))
 ```
 
 # Cleaning manager_relationship
@@ -182,6 +178,14 @@ alldata <- bind_rows(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
 str(alldata)
 ```
 
+# Cleaning yrs_exp
+
+```{r}
+# replacing negative values with NA
+alldata <- alldata %>% 
+  mutate(YRS_EXP = replace(alldata$YRS_EXP, alldata$YRS_EXP < 0, NA))
+```
+
 # Checking TCC
 ```{r}
 describe(alldata$TCC)
@@ -190,8 +194,29 @@ ggplot(data=alldata) +
   xlim(c(0,401622))
 ```
 
+```{r}
+# checking if high-paying jobs concentrate in certain roles
+alldata %>%
+  filter(TCC > quantile(alldata$TCC, 0.99, na.rm = TRUE)) %>%
+  {table(.$ONET_BROAD)} %>% sort(decreasing=TRUE) # filtered by 99th data percentile
 
-# Savind data into a .RData and .csv
+alldata %>%
+  filter(TCC > 401622) %>%
+  {table(.$ONET_BROAD)} %>% sort(decreasing=TRUE) # filtered by 2020 99th percentile
+
+```
+
+The majority of outliers are chief executives, physicians, lawyers, operations 
+managers, sales managers, financial analysts, and management analysts. Since
+they're mostly uniformly in the same career area (upper management), we can just
+use the 2020 99th percentile as a cutoff for our data.
+
+```{r}
+alldata <- alldata %>% filter(TCC > 401622)
+```
+
+
+# Saving data into a .RData and .csv
 ```{r}
 save(alldata, file = "alldata.Rdata") #filesize ~ 0.12 GB
 # write.csv(alldata, "alldata.csv") filesize ~ 1.2 GB, yikes!
