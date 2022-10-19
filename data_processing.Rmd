@@ -216,6 +216,13 @@ alldata <- alldata %>% filter(TCC > 401622)
 ```
 
 
+# Filtering by age
+```{r}
+# keeping ages 24 to 54, exlcuding first-time hires and workforce vets
+alldata <- alldata %>% filter(AGE>=24 & AGE <= 54)
+```
+
+
 # Saving data into a .RData and .csv
 ```{r}
 save(alldata, file = "alldata.Rdata") #filesize ~ 0.12 GB
