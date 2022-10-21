@@ -282,7 +282,8 @@ Updates to `data_processing.Rmd`:
     * Filtered dataset to exclude data higher than the 2020 99th percentile in individual
     income
 * Reordered commands for efficiency
-* 
+* Filtered for 24 <= age <= 54 
+* Recoded `NA` in `Gender` to "Missing"
 
 ---
 
@@ -313,6 +314,30 @@ Questions:
 
 
 
+
+
+<details><summary><b>10/21/22</b></summary>
+
+Updates to `data_processing.Rmd`:
+* Reordered commands for relabelling the `GENDER` column (fixed an error where NAs would
+be labelled as "Other" instead of "Missing")
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
 
 
 
