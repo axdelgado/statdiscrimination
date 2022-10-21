@@ -321,6 +321,7 @@ Questions:
 Updates to `data_processing.Rmd`:
 * Reordered commands for relabelling the `GENDER` column (fixed an error where NAs would
 be labelled as "Other" instead of "Missing")
+* Fixed filtering by `TCC` (I used the wrong inequality before haha)
 
 ---
 
