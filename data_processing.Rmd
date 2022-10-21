@@ -40,14 +40,22 @@ table(df_2015$GENDER)
 
 ```{r}
 ### getting consistent gender labels ###
+# coding NAs as "Missing"
+df_2015$GENDER[is.na(df_2015$GENDER)] <- "Missing"
+df_2016$GENDER[is.na(df_2016$GENDER)] <- "Missing"
+df_2017$GENDER[is.na(df_2017$GENDER)] <- "Missing"
+df_2018$GENDER[is.na(df_2018$GENDER)] <- "Missing"
+df_2019$GENDER[is.na(df_2019$GENDER)] <- "Missing"
+df_2020$GENDER[is.na(df_2020$GENDER)] <- "Missing"
 
-# is there a more elegant way to do this???
-df_2015$GENDER[!(df_2015$GENDER %in% c("Female", "Male", NA))] <- "Other"
-df_2016$GENDER[!(df_2016$GENDER %in% c("Female", "Male", NA))] <- "Other"
-df_2017$GENDER[!(df_2017$GENDER %in% c("Female", "Male", NA))] <- "Other"
-df_2018$GENDER[!(df_2018$GENDER %in% c("Female", "Male", NA))] <- "Other"
-df_2019$GENDER[!(df_2019$GENDER %in% c("Female", "Male", NA))] <- "Other"
-df_2020$GENDER[!(df_2020$GENDER %in% c("Female", "Male", NA))] <- "Other"
+# replacing the rest as "Other"
+df_2015$GENDER[!(df_2015$GENDER %in% c("Female","Male","Missing"))] <- "Other"
+df_2016$GENDER[!(df_2016$GENDER %in% c("Female","Male","Missing"))] <- "Other"
+df_2017$GENDER[!(df_2017$GENDER %in% c("Female","Male","Missing"))] <- "Other"
+df_2018$GENDER[!(df_2018$GENDER %in% c("Female","Male","Missing"))] <- "Other"
+df_2019$GENDER[!(df_2019$GENDER %in% c("Female","Male","Missing"))] <- "Other"
+df_2020$GENDER[!(df_2020$GENDER %in% c("Female","Male","Missing"))] <- "Other"
+
 
 ### below doesn't work
 # dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
