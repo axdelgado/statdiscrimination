@@ -220,7 +220,7 @@ they're mostly uniformly in the same career area (upper management), we can just
 use the 2020 99th percentile as a cutoff for our data.
 
 ```{r}
-alldata <- alldata %>% filter(TCC > 401622)
+alldata <- alldata %>% filter(TCC < 401622)
 ```
 
 
