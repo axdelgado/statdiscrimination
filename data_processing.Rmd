@@ -33,6 +33,7 @@ df_2019 <- rbind(read_xlsx("data/2019a.xlsx"),
 df_2020 <- read_xlsx("data/2020.xlsx")
 ```
 
+
 # cleaning gender
 ```{r}
 table(df_2015$GENDER)
