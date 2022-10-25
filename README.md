@@ -345,6 +345,29 @@ Questions:
 
 
 
+details><summary><b>10/24/22</b></summary>
+
+Updates to `data_processing.Rmd`:
+* Fixed filter for removing data data pts below a minimum wage salary
+
+---
+
+Updates to `data_analysis.Rmd`
+* Added summary statistics code for TCC, Education experience, and job experience
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
 
 
 
