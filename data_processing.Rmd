@@ -223,6 +223,15 @@ use the 2020 99th percentile as a cutoff for our data.
 alldata <- alldata %>% filter(TCC < 401622)
 ```
 
+I will also filter out data that have a TCC lower than 2080*7.25, i.e. below
+a yearly salary for someone working a full time job that pays the federal 
+minumum wage. This will decrease the likelihood that we are looking at data for
+part time workers.
+
+```{r}
+alldata <- alldata %>% filter(TCC > 15080)
+```
+
 
 # Filtering by age
 ```{r}
