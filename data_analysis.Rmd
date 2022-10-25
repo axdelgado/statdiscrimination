@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # setting up environment
+rm(list=ls())
 setwd("~/Yale/2022 Fall/Tobin RA")
 # loading packages
 library(readxl)
@@ -51,6 +52,12 @@ for (i in 1:length(2015:2020)){
   print(genderdist(iter))
 }
 
+for (i in 1:length(2015:2020)){
+  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+  print(table(as.factor(iter$GENDER)))
+}
+
+table(alldata$GENDER)
 ```
 
 There are a fairly even number of responses from both males and females across the years. It seems the proportion of "Other" resposnes has been slightly increasing. This could be due to better clarity for the option, shifts in social norms, or maybe better anti-discriminatory policy.
@@ -226,7 +233,7 @@ salaryhist2 <- function(x){
     xlim(c(0,200000)) +
     theme_minimal() +
     ylim(0, 3.5 * 10 ** (-5)) +
-    scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8")) 
+    scale_fill_manual(values = c("#FF0000", "#169B45", "#0F31D8", "#5B6CC1")) 
 }
 
 for (i in 1:length(2015:2020)){
@@ -236,7 +243,21 @@ for (i in 1:length(2015:2020)){
 
 ```
 
-## Industry by gender
+```{r}
+# generating summary stats for TCC
+# female
+alldata %>% filter(GENDER=="Female") %>% select(TCC) %>%
+  Hmisc::describe(.)
+alldata %>% filter(GENDER=="Female") %>% select(TCC) %>% unlist() %>% sd()
+
+# male
+alldata %>% filter(GENDER=="Male") %>% select(TCC) %>%
+  Hmisc::describe(.)
+alldata %>% filter(GENDER=="Male") %>% select(TCC) %>% unlist() %>% sd()
+```
+
+
+## Industry byagender
 ```{r}
 # industry breakdown across all year
 table(alldata$Industry, alldata$GENDER)
@@ -244,7 +265,7 @@ table(alldata$Industry, alldata$GENDER)
 #breakdown across multiple years
 for (i in 1:length(2015:2020)){
   iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
-  print(table(iter$Industry, iter$GENDER))
+  print(round(prop.table(table(iter$Industry, iter$GENDER),2),5))
 }
 sort(unique(alldata$Industry))
 
@@ -255,7 +276,7 @@ sort(unique(alldata$Industry))
 ```{r}
 table(alldata$MGMT_ROLE, alldata$GENDER)
 
-ggplot(data=df2, aes(x=dose, y=len, fill=supp)) +
+ggplot(data=alldata, aes(x=dose, y=len, fill=supp)) +
   geom_bar(stat="identity")
 
 alldata %>% filter(MGMT_ROLE == "Management Role") %>%
@@ -323,6 +344,9 @@ for (i in 1:length(2015:2020)){
   iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
   print(agehist(iter))
 }
+
+
+agehist(alldata)
 ```
  
  Ages are pretty left skewed, which we can take into account when considering
