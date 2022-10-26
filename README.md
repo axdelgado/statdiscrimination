@@ -389,6 +389,7 @@ Updates to `data_processing.Rmd`:
 
 Updates to `data_analysis.Rmd`
 * Added summary statistics code for age and salary history question
+* Added summary stats for "Other" gender category
 
 ---
 
