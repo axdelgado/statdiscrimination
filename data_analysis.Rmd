@@ -254,6 +254,11 @@ alldata %>% filter(GENDER=="Female") %>% select(TCC) %>% unlist() %>% sd()
 alldata %>% filter(GENDER=="Male") %>% select(TCC) %>%
   Hmisc::describe(.)
 alldata %>% filter(GENDER=="Male") %>% select(TCC) %>% unlist() %>% sd()
+
+# other
+alldata %>% filter(GENDER=="Other") %>% select(TCC) %>%
+  Hmisc::describe(.)
+alldata %>% filter(GENDER=="Other") %>% select(TCC) %>% unlist() %>% sd()
 ```
 
 
@@ -338,6 +343,11 @@ sd(alldata$YRS_EXP[alldata$GENDER=="Female"], na.rm = TRUE)
 alldata %>% filter(GENDER=="Male") %>% select(YRS_EXP) %>%
   Hmisc::describe(.)
 sd(alldata$YRS_EXP[alldata$GENDER=="Male"], na.rm = TRUE)
+
+# Other
+alldata %>% filter(GENDER=="Other") %>% select(YRS_EXP) %>%
+  Hmisc::describe(.)
+sd(alldata$YRS_EXP[alldata$GENDER=="Other"], na.rm = TRUE)
 ```
 
 
@@ -380,6 +390,11 @@ sd(alldata$AGE[alldata$GENDER=="Female"], na.rm = TRUE)
 alldata %>% filter(GENDER=="Male") %>% select(AGE) %>%
   Hmisc::describe(.)
 sd(alldata$AGE[alldata$GENDER=="Male"], na.rm = TRUE)
+
+# Other
+alldata %>% filter(GENDER=="Other") %>% select(AGE) %>%
+  Hmisc::describe(.)
+sd(alldata$AGE[alldata$GENDER=="Other"], na.rm = TRUE)
 ```
 
 
@@ -390,6 +405,9 @@ prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Female"]))
 
 # male
 prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Male"]))
+
+# Other
+prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Other"]))
 ```
 
 
