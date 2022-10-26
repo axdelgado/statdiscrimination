@@ -372,6 +372,41 @@ Questions:
 
 
 
+
+
+
+
+
+
+
+
+<details><summary><b>10/25/22</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Added summary statistics code for age and salary history question
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
 <details><summary><b>Update template</b></summary>
 
 Updates to `data_processing.Rmd`:
