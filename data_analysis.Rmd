@@ -325,6 +325,22 @@ for (i in 1:length(2015:2020)){
 }
 ```
 
+
+## Yrs exp by gender
+```{r}
+# generating summary stats for yrs_exp
+# female
+alldata %>% filter(GENDER=="Female") %>% select(YRS_EXP) %>%
+  Hmisc::describe(.)
+sd(alldata$YRS_EXP[alldata$GENDER=="Female"], na.rm = TRUE)
+
+# male
+alldata %>% filter(GENDER=="Male") %>% select(YRS_EXP) %>%
+  Hmisc::describe(.)
+sd(alldata$YRS_EXP[alldata$GENDER=="Male"], na.rm = TRUE)
+```
+
+
 ## Age by gender
 ```{r}
 agehist <- function(x){
@@ -353,17 +369,28 @@ agehist(alldata)
  external effects of broader trends.
 
 
+```{r}
+# generating summary stats for yrs_exp
+# female
+alldata %>% filter(GENDER=="Female") %>% select(AGE) %>%
+  Hmisc::describe(.)
+sd(alldata$AGE[alldata$GENDER=="Female"], na.rm = TRUE)
+
+# male
+alldata %>% filter(GENDER=="Male") %>% select(AGE) %>%
+  Hmisc::describe(.)
+sd(alldata$AGE[alldata$GENDER=="Male"], na.rm = TRUE)
+```
 
 
+## Salary hist question by gender
+```{r}
+# female
+prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Female"]))
 
-
-
-
-
-
-
-
-
+# male
+prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Male"]))
+```
 
 
 
