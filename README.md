@@ -408,6 +408,44 @@ Questions:
 
 
 
+
+
+
+
+
+<details><summary><b>10/29/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Created summary statistics code for highest level of educational attainment by gender
+    * created a new logical column that parses out the highest level of edu from other cols
+* Created summary stats for the number of employees in company by gender
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
+
+
+
+
 <details><summary><b>Update template</b></summary>
 
 Updates to `data_processing.Rmd`:
