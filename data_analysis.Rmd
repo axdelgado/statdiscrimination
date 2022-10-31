@@ -262,7 +262,7 @@ alldata %>% filter(GENDER=="Other") %>% select(TCC) %>% unlist() %>% sd()
 ```
 
 
-## Industry byagender
+## Industry by gender
 ```{r}
 # industry breakdown across all year
 table(alldata$Industry, alldata$GENDER)
@@ -280,9 +280,6 @@ sort(unique(alldata$Industry))
 ## Management by gender
 ```{r}
 table(alldata$MGMT_ROLE, alldata$GENDER)
-
-ggplot(data=alldata, aes(x=dose, y=len, fill=supp)) +
-  geom_bar(stat="identity")
 
 alldata %>% filter(MGMT_ROLE == "Management Role") %>%
   ggplot(aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
@@ -324,10 +321,41 @@ These seem more balanced, but the above differences seem to still persist.
 Let's observe any changes over time
 
 ```{r}
-for (i in 1:length(2015:2020)){
-  iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
-  print(round(prop.table(table(iter$EDU_LVL, iter$GENDER),margin=1),6))
-}
+# for (i in 1:length(2015:2020)){
+#   iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+#   print(round(prop.table(table(iter$EDU_LVL, iter$GENDER),margin=1),6))
+# }
+```
+
+```{r}
+# summary stats for education level
+educ <- alldata[,c("GENDER","EDU_LVL")] # subsetting data
+
+# creating boolean indicators, grouping degrees together
+educ$undergrad <- educ$EDU_LVL %in% c("Associate's Degree", "Bachelor's Degree")
+educ$professional <- educ$EDU_LVL %in% c("Health Professional Doctorate (MD, DMD, DVM, DPT, etc.)",
+                                         "Health Professional Doctorate (MD, DMD, DVM, etc.)",
+                                         "Master of Business Administration (MBA)",
+                                         "Law Degree (JD, LLM)")
+educ$graduate <- educ$EDU_LVL %in% c("Doctorate (PhD)", 
+                                     "Master's Degree (non-MBA)")
+educ$none <- educ$EDU_LVL %in% c("No Degree", "Non-Degree Certificate Program",
+                                 "High School Diploma or GED")
+
+# new row of highest degree labels
+educ <- educ %>%
+  mutate(highest = case_when(undergrad == 1 ~ "undergrad",
+                            professional == 1 ~ "professional",
+                            graduate == 1 ~ "graduate",
+                            none == 1 ~ "none"))
+
+# proportion tables
+round(prop.table(table(educ$highest,educ$GENDER), margin = 2),4)
+
+# NA counts
+sum(is.na(educ$EDU_LVL[educ$GENDER=="Female"]))
+sum(is.na(educ$EDU_LVL[educ$GENDER=="Male"]))
+sum(is.na(educ$EDU_LVL[educ$GENDER=="Other"]))
 ```
 
 
@@ -408,6 +436,24 @@ prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Male"]))
 
 # Other
 prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Other"]))
+# 2:54
+# 1:26
+```
+
+## Company size
+```{r}
+# female
+alldata %>% filter(GENDER=="Female") %>% select(COMPANY_SIZE) %>%
+  Hmisc::describe(.)
+sd(alldata$COMPANY_SIZE[alldata$GENDER=="Female"], na.rm = TRUE)
+# male
+alldata %>% filter(GENDER=="Male") %>% select(COMPANY_SIZE) %>%
+  Hmisc::describe(.)
+sd(alldata$COMPANY_SIZE[alldata$GENDER=="Male"], na.rm = TRUE)
+# other
+alldata %>% filter(GENDER=="Other") %>% select(COMPANY_SIZE) %>%
+  Hmisc::describe(.)
+sd(alldata$COMPANY_SIZE[alldata$GENDER=="Other"], na.rm = TRUE)
 ```
 
 
