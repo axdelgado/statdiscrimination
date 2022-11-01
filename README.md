@@ -444,6 +444,35 @@ Questions:
 
 
 
+<details><summary><b>10/31/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Added code to look at the highest proportion industries across genders
+
+---
+
+Notes:
+* The "other" gender category has the exact same top jobs as women, and their education seems to be more similar to women as well
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
+
 
 
 <details><summary><b>Update template</b></summary>
