@@ -244,6 +244,12 @@ for (i in 1:length(2015:2020)){
 ```
 
 ```{r}
+# Gender data vs missing
+salaryhist2(alldata)
+```
+
+
+```{r}
 # generating summary stats for TCC
 # female
 alldata %>% filter(GENDER=="Female") %>% select(TCC) %>%
@@ -276,6 +282,16 @@ sort(unique(alldata$Industry))
 
 # add horiz barplot, use naics codes only
 ```
+
+```{r}
+# Top industries by gender
+head(sort(table(alldata$Industry[alldata$GENDER=="Female"]),decreasing = TRUE))
+head(sort(table(alldata$Industry[alldata$GENDER=="Male"]),decreasing = TRUE))
+head(sort(table(alldata$Industry[alldata$GENDER=="Other"]),decreasing = TRUE))
+head(sort(table(alldata$Industry[alldata$GENDER!="Missing"]),decreasing = TRUE))
+head(sort(table(alldata$Industry[alldata$GENDER=="Missing"]),decreasing = TRUE))
+```
+
 
 ## Management by gender
 ```{r}
@@ -351,6 +367,10 @@ educ <- educ %>%
 
 # proportion tables
 round(prop.table(table(educ$highest,educ$GENDER), margin = 2),4)
+#comparing missing with complete gender data
+round(prop.table(table(educ$highest[educ$GENDER %in% c("Male", "Female", "Other")],
+                       educ$GENDER[educ$GENDER %in% c("Male", "Female", "Other")]), margin = 2),4)
+round(prop.table(table(educ$highest[educ$GENDER == "Missing"],educ$GENDER[educ$GENDER == "Missing"]), margin = 2),4)
 
 # NA counts
 sum(is.na(educ$EDU_LVL[educ$GENDER=="Female"]))
@@ -456,6 +476,20 @@ alldata %>% filter(GENDER=="Other") %>% select(COMPANY_SIZE) %>%
 sd(alldata$COMPANY_SIZE[alldata$GENDER=="Other"], na.rm = TRUE)
 ```
 
+## Hourly Workweek by Gender
+```{r}
+alldata %>% filter(GENDER=="Female") %>% select(HOURLY_WORKWEEK) %>%
+  Hmisc::describe(.)
+sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Female"], na.rm = TRUE)
+# male
+alldata %>% filter(GENDER=="Male") %>% select(HOURLY_WORKWEEK) %>%
+  Hmisc::describe(.)
+sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Male"], na.rm = TRUE)
+# other
+alldata %>% filter(GENDER=="Other") %>% select(HOURLY_WORKWEEK) %>%
+  Hmisc::describe(.)
+sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Other"], na.rm = TRUE)
+```
 
 
 ```{r}
