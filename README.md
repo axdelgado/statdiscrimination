@@ -453,12 +453,13 @@ Updates to `data_processing.Rmd`:
 
 Updates to `data_analysis.Rmd`
 * Added code to look at the highest proportion industries across genders
+* Added code to compare missing data for TCC, Age, years of experience, work hours, and industry spread
 
 ---
 
 Notes:
 * The "other" gender category has the exact same top jobs as women, and their education seems to be more similar to women as well
-* 
+* Our missing data seems to have 
 
 ---
 
