@@ -345,7 +345,7 @@ Questions:
 
 
 
-details><summary><b>10/24/22</b></summary>
+<details><summary><b>10/24/22</b></summary>
 
 Updates to `data_processing.Rmd`:
 * Fixed filter for removing data data pts below a minimum wage salary
@@ -433,7 +433,7 @@ Notes:
 ---
 
 Questions:
-* 
+* How should we code in the SHB variable? Should we have it set to after the year in which the ban take effect? Right after? (My intuitions would say that we should wait some time, as the salary and information they are reporting are likely from jobs they got before the ban in the immediate post-period)
 
 </details>
 
