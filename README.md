@@ -470,7 +470,28 @@ Questions:
 
 
 
+<details><summary><b>11/06/2022</b></summary>
 
+Updates to `data_processing.Rmd`:
+* Added code to create a SHB column
+	* this column is a 1 if the response was sent at least 6 months after an SHB was implemented in the respondents' state, and 0 otherwise
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
 
 
 
