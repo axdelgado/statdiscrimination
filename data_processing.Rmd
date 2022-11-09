@@ -16,6 +16,7 @@ library(tidyverse)
 library(readxl)
 library(lattice)
 library(Hmisc)
+library(lubridate)
 ```
 
 # Reading data:
@@ -238,6 +239,46 @@ alldata <- alldata %>% filter(TCC > 15080)
 ```{r}
 # keeping ages 24 to 54, exlcuding first-time hires and workforce vets
 alldata <- alldata %>% filter(AGE>=24 & AGE <= 54)
+```
+
+# Creating SHB Col
+```{r}
+# first, logging dates that the bans went into effect
+head(alldata$UPDATE_DATE)
+head(alldata$UPDATE_DATE) > (as_date("2016-01-06") + months(1))
+
+alldata <- alldata %>% 
+  mutate(
+    SHB = case_when(
+      LOCATION_STATE == "Oregon" & UPDATE_DATE > (as_date("2017-10-06") + months(6)) ~ 1,
+      LOCATION_STATE == "District of Columbia" & UPDATE_DATE > (as_date("2017-11-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Delaware" & UPDATE_DATE > (as_date("2017-12-14") + months(6)) ~ 1,
+      LOCATION_STATE == "California" & UPDATE_DATE > (as_date("2018-01-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Massachusetts" & UPDATE_DATE > (as_date("2018-07-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Vermont" & UPDATE_DATE > (as_date("2018-07-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Connecticut" & UPDATE_DATE > (as_date("2019-01-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Hawaii" & UPDATE_DATE > (as_date("2019-01-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Michigan" & UPDATE_DATE > (as_date("2019-01-15") + months(6)) ~ 1,
+      LOCATION_STATE == "North Carolina" & UPDATE_DATE > (as_date("2019-04-02") + months(6)) ~ 1,
+      LOCATION_STATE == "Washington" & UPDATE_DATE > (as_date("2019-07-28") + months(6)) ~ 1,
+      LOCATION_STATE == "Maine" & UPDATE_DATE > (as_date("2019-09-17") + months(6)) ~ 1,
+      LOCATION_STATE == "Alabama" & UPDATE_DATE > (as_date("2019-09-01") + months(6)) ~ 1,
+      # Illinois had a state-employer SHB starting on Jan 15 2019
+      LOCATION_STATE == "Illinois" & UPDATE_DATE > (as_date("2019-09-29") + months(6)) ~ 1,
+      # jersey had a state-employer SHB starting on Feb 1 2018
+      LOCATION_STATE == "New Jersey" & UPDATE_DATE > (as_date("2020-01-01") + months(6)) ~ 1,
+      # New York had a state-employer SHB starting on Jan 9 2017
+      LOCATION_STATE == "New York" & UPDATE_DATE > (as_date("2020-01-06") + months(6)) ~ 1,
+      LOCATION_STATE == "Maryland" & UPDATE_DATE > (as_date("2020-10-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Colorado" & UPDATE_DATE > (as_date("2021-01-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Nevada" & UPDATE_DATE > (as_date("2021-10-01") + months(6)) ~ 1,
+      LOCATION_STATE == "Rhode Island" & UPDATE_DATE > (as_date("2022-01-01") + months(6)) ~ 1,
+      TRUE ~ 0
+    )
+  )
+
+# checking
+# alldata %>% select(UPDATE_DATE, LOCATION_STATE, SHB) %>% filter(UPDATE_DATE > "2019-01-01")
 ```
 
 
