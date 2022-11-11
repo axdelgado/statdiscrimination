@@ -497,6 +497,34 @@ Questions:
 
 
 
+
+
+
+<details><summary><b>11/11/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* 
+
+---
+
+Notes:
+* At this point, just account for gender, TCC, SHB, education level, we have ~230000 complete cases
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
 <details><summary><b>Update template</b></summary>
 
 Updates to `data_processing.Rmd`:
