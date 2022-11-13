@@ -281,6 +281,36 @@ alldata <- alldata %>%
 # alldata %>% select(UPDATE_DATE, LOCATION_STATE, SHB) %>% filter(UPDATE_DATE > "2019-01-01")
 ```
 
+# Creating educ col
+```{r}
+# this will add a column, educ, which specifies the highest level of 
+# educational attainment.
+# this will have categories like highschool, undergraduate degree, professional
+# degree, etc.
+
+educ <- alldata[,c("EDU_LVL")] # subsetting data
+
+# creating boolean indicators, grouping degrees together
+educ$undergrad <- educ$EDU_LVL %in% c("Associate's Degree", "Bachelor's Degree")
+educ$professional <- educ$EDU_LVL %in% c("Health Professional Doctorate (MD, DMD, DVM, DPT, etc.)",
+                                         "Health Professional Doctorate (MD, DMD, DVM, etc.)",
+                                         "Master of Business Administration (MBA)",
+                                         "Law Degree (JD, LLM)")
+educ$graduate <- educ$EDU_LVL %in% c("Doctorate (PhD)", 
+                                     "Master's Degree (non-MBA)")
+educ$none <- educ$EDU_LVL %in% c("No Degree", "Non-Degree Certificate Program",
+                                 "High School Diploma or GED")
+
+# new row of highest degree labels
+educ <- educ %>%
+  mutate(highest = case_when(undergrad == 1 ~ "undergrad",
+                            professional == 1 ~ "professional",
+                            graduate == 1 ~ "graduate",
+                            none == 1 ~ "none"))
+
+alldata$highest <- educ$highest
+```
+
 
 # Saving data into a .RData and .csv
 ```{r}
