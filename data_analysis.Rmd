@@ -22,8 +22,8 @@ library(ggExtra)
 
 # loading data
 load("alldata.RData")
-load("allyears.RData")
-dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
+# load("allyears.RData")
+# dfList <- list(df_2015, df_2016, df_2017, df_2018, df_2019, df_2020)
 
 ```
 
@@ -57,6 +57,7 @@ for (i in 1:length(2015:2020)){
   print(table(as.factor(iter$GENDER)))
 }
 
+
 table(alldata$GENDER)
 ```
 
@@ -66,22 +67,15 @@ There are many NAs, we should discuss what to do with these later.
 
 ## Checking unique responses
 ```{r}
-### response count stats
-nrow(df_2015)
-nrow(df_2016)
-nrow(df_2017)
-nrow(df_2018)
-nrow(df_2019)
-nrow(df_2020)
-# number of responses changes a lot! Is this an issue?
-
 ### checking if there are duplicates within each year
-length(unique(df_2015$PID))-nrow(df_2015)
-length(unique(df_2016$PID))-nrow(df_2016)
-length(unique(df_2017$PID))-nrow(df_2017)
-length(unique(df_2018$PID))-nrow(df_2018)
-length(unique(df_2019$PID))-nrow(df_2019)
-length(unique(df_2020$PID))-nrow(df_2020)
+########## deprecated code based on having a dataframe for each year, 
+########## too lazy to change it haha
+# length(unique(df_2015$PID))-nrow(df_2015)
+# length(unique(df_2016$PID))-nrow(df_2016)
+# length(unique(df_2017$PID))-nrow(df_2017)
+# length(unique(df_2018$PID))-nrow(df_2018)
+# length(unique(df_2019$PID))-nrow(df_2019)
+# length(unique(df_2020$PID))-nrow(df_2020)
 # no duplicates within year
 ```
 
@@ -245,7 +239,10 @@ for (i in 1:length(2015:2020)){
 
 ```{r}
 # Gender data vs missing
-salaryhist2(alldata)
+ggplot(alldata) +
+    geom_density(aes(x = TCC, fill = GENDER=="Missing"),alpha=0.5)
+
+
 ```
 
 
@@ -345,37 +342,17 @@ Let's observe any changes over time
 
 ```{r}
 # summary stats for education level
-educ <- alldata[,c("GENDER","EDU_LVL")] # subsetting data
-
-# creating boolean indicators, grouping degrees together
-educ$undergrad <- educ$EDU_LVL %in% c("Associate's Degree", "Bachelor's Degree")
-educ$professional <- educ$EDU_LVL %in% c("Health Professional Doctorate (MD, DMD, DVM, DPT, etc.)",
-                                         "Health Professional Doctorate (MD, DMD, DVM, etc.)",
-                                         "Master of Business Administration (MBA)",
-                                         "Law Degree (JD, LLM)")
-educ$graduate <- educ$EDU_LVL %in% c("Doctorate (PhD)", 
-                                     "Master's Degree (non-MBA)")
-educ$none <- educ$EDU_LVL %in% c("No Degree", "Non-Degree Certificate Program",
-                                 "High School Diploma or GED")
-
-# new row of highest degree labels
-educ <- educ %>%
-  mutate(highest = case_when(undergrad == 1 ~ "undergrad",
-                            professional == 1 ~ "professional",
-                            graduate == 1 ~ "graduate",
-                            none == 1 ~ "none"))
 
 # proportion tables
-round(prop.table(table(educ$highest,educ$GENDER), margin = 2),4)
+round(prop.table(table(alldata$highest,alldata$GENDER), margin = 2),4)
 #comparing missing with complete gender data
-round(prop.table(table(educ$highest[educ$GENDER %in% c("Male", "Female", "Other")],
-                       educ$GENDER[educ$GENDER %in% c("Male", "Female", "Other")]), margin = 2),4)
-round(prop.table(table(educ$highest[educ$GENDER == "Missing"],educ$GENDER[educ$GENDER == "Missing"]), margin = 2),4)
+round(prop.table(table(alldata$highest[alldata$GENDER %in% c("Male", "Female", "Other")])),4)
+round(prop.table(table(alldata$highest[alldata$GENDER == "Missing"])),4)
 
 # NA counts
-sum(is.na(educ$EDU_LVL[educ$GENDER=="Female"]))
-sum(is.na(educ$EDU_LVL[educ$GENDER=="Male"]))
-sum(is.na(educ$EDU_LVL[educ$GENDER=="Other"]))
+sum(is.na(alldata$EDU_LVL[alldata$GENDER=="Female"]))
+sum(is.na(alldata$EDU_LVL[alldata$GENDER=="Male"]))
+sum(is.na(alldata$EDU_LVL[alldata$GENDER=="Other"]))
 ```
 
 
@@ -458,6 +435,17 @@ prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Male"]))
 prop.table(table(alldata$SALARY_HISTORY[alldata$GENDER=="Other"]))
 # 2:54
 # 1:26
+
+# missing data per year
+for (i in 1:length(2015:2020)){
+    iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+    print(sum(is.na(iter$SALARY_HISTORY)))
+}
+# total obs per year
+for (i in 1:length(2015:2020)){
+    iter <- filter(alldata, year(alldata$UPDATE_DATE) == c(2015:2020)[i])
+    print(length(iter$SALARY_HISTORY))
+}
 ```
 
 ## Company size
@@ -534,7 +522,7 @@ just sample them?
 # mult.norm(num2015)$mult.test
 # CSQPlot(sample_n(num2015,500))
 
-cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
+#cor(num2015$HOURLY_RATE, num2015$SALARY, use="complete.obs")
 # interesting error - is it either salary or wage reported?
 ```
 
@@ -554,3 +542,174 @@ head(sort(prop.table(table(alldata$LOCATION_CITY)),TRUE),15)
 ```
 
 Here's the 15 most prominent ccities in our dataset. 
+
+
+# SHQ Comparisons
+
+## TCC by SHQ
+
+```{r}
+# generating summary stats for TCC
+# not missing
+alldata %>% filter(!is.na(SALARY_HISTORY)) %>% select(TCC) %>%
+  Hmisc::describe(.)
+alldata %>% filter(!is.na(SALARY_HISTORY)) %>% select(TCC) %>% unlist() %>% sd()
+
+# missing
+alldata %>% filter(is.na(SALARY_HISTORY)) %>% select(TCC) %>%
+  Hmisc::describe(.)
+alldata %>% filter(is.na(SALARY_HISTORY)) %>% select(TCC) %>% unlist() %>% sd()
+
+```
+
+
+## Industry by SHQ
+```{r}
+# industry breakdown across all year
+table(alldata$Industry, is.na(alldata$SALARY_HISTORY))
+
+```
+
+```{r}
+# Top industries by SHQ
+head(sort(table(alldata$Industry[!is.na(alldata$SALARY_HISTORY)]),decreasing = TRUE))
+head(sort(table(alldata$Industry[is.na(alldata$SALARY_HISTORY)]),decreasing = TRUE))
+```
+
+
+## Management by SHQ
+```{r}
+table(alldata$MGMT_ROLE, is.na(alldata$SALARY_HISTORY))
+
+alldata %>% filter(MGMT_ROLE == "Management Role") %>%
+  ggplot(aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
+    geom_bar(stat="identity",aes(fill=GENDER)) + 
+    ggtitle("management role by gender")
+
+
+alldata %>% filter(MGMT_ROLE == "Management Role") %>%
+  ggplot(aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
+    geom_col(aes(fill=GENDER), position = "fill") + 
+    ggtitle("management role by gender") #+
+    #ylim(c(0,1.2))
+
+# another way for a single year
+barplot(prop.table(table(alldata$MGMT_ROLE, alldata$GENDER), margin=2))
+
+
+# ggplot(alldata, aes(x=as.factor(year(UPDATE_DATE)),y=MGMT_ROLE)) +
+#   geom_bar(stat = "identity",aes(fill=GENDER))
+```
+ 
+
+## Educ by SHQ
+
+```{r}
+# summary stats for education level
+# proportion tables
+round(prop.table(table(alldata$highest, is.na(alldata$SALARY_HISTORY)), margin = 2),4)
+sum(is.na(alldata$highest[!is.na(alldata$SALARY_HISTORY)]))
+sum(is.na(alldata$highest[is.na(alldata$SALARY_HISTORY)]))
+```
+
+
+## Yrs exp by SHQ
+```{r}
+# generating summary stats for yrs_exp
+# not missing
+alldata %>% filter(!is.na(SALARY_HISTORY)) %>% select(YRS_EXP) %>%
+  Hmisc::describe(.)
+sd(alldata$YRS_EXP[!is.na(alldata$SALARY_HISTORY)], na.rm = TRUE)
+
+# missing
+alldata %>% filter(is.na(SALARY_HISTORY)) %>% select(YRS_EXP) %>%
+  Hmisc::describe(.)
+sd(alldata$YRS_EXP[is.na(alldata$SALARY_HISTORY)], na.rm = TRUE)
+```
+
+
+## Age by SHQ
+
+```{r}
+# generating summary stats for age
+# not missing
+alldata %>% filter(!is.na(SALARY_HISTORY)) %>% select(AGE) %>%
+  Hmisc::describe(.)
+sd(alldata$AGE[!is.na(alldata$SALARY_HISTORY)], na.rm = TRUE)
+
+# missing
+alldata %>% filter(is.na(SALARY_HISTORY)) %>% select(AGE) %>%
+  Hmisc::describe(.)
+sd(alldata$AGE[is.na(alldata$SALARY_HISTORY)], na.rm = TRUE)
+```
+
+
+## Salary hist question
+```{r}
+# not missing
+prop.table(table(alldata$SALARY_HISTORY[!is.na(alldata$SALARY_HISTORY)]))
+
+```
+
+## Company size
+```{r}
+# female
+alldata %>% filter(GENDER=="Female") %>% select(COMPANY_SIZE) %>%
+  Hmisc::describe(.)
+sd(alldata$COMPANY_SIZE[alldata$GENDER=="Female"], na.rm = TRUE)
+# male
+alldata %>% filter(GENDER=="Male") %>% select(COMPANY_SIZE) %>%
+  Hmisc::describe(.)
+sd(alldata$COMPANY_SIZE[alldata$GENDER=="Male"], na.rm = TRUE)
+# other
+alldata %>% filter(GENDER=="Other") %>% select(COMPANY_SIZE) %>%
+  Hmisc::describe(.)
+sd(alldata$COMPANY_SIZE[alldata$GENDER=="Other"], na.rm = TRUE)
+```
+
+## Hourly Workweek by Gender
+```{r}
+alldata %>% filter(GENDER=="Female") %>% select(HOURLY_WORKWEEK) %>%
+  Hmisc::describe(.)
+sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Female"], na.rm = TRUE)
+# male
+alldata %>% filter(GENDER=="Male") %>% select(HOURLY_WORKWEEK) %>%
+  Hmisc::describe(.)
+sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Male"], na.rm = TRUE)
+# other
+alldata %>% filter(GENDER=="Other") %>% select(HOURLY_WORKWEEK) %>%
+  Hmisc::describe(.)
+sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Other"], na.rm = TRUE)
+```
+
+
+
+# Instrumental variable
+
+A proposed model: 
+$$ Y=\beta_0 + X\beta_c + SHB\beta_{SHB} + Gender*SHB*\beta_{inter} + \epsilon $$
+
+Where $Y$ is total compensation,  $X$ is a matrix of controls, $\beta_c$ is 
+the vector of coefficients for
+the controls, $SHB$ is the vector of pre/post SHB, and $\beta_SHB$ is the 
+coefficient for SHB. We also have $Gender*SHB*\beta_{inter}$, which accounts
+for the interaction of gender and disclosure. 
+Here, SHB is a instrument for salary disclosure, as other
+unobserved variables mah impact both salary history disclosure *and* other
+independent variables. 
+
+
+First let's check for potential interaction effects
+```{r}
+interaction.plot(x.factor = alldata$GENDER, #x-axis variable
+                 trace.factor = alldata$SHB, #variable for lines
+                 response = alldata$TCC, #y-axis variable
+                 fun = median, #metric to plot
+                 ylab = "Total Compensation",
+                 xlab = "Gender",
+                 col = c("red", "blue"),
+                 lty = 1, #line type
+                 lwd = 2, #line width
+                 trace.label = "SHB?")
+```
+
