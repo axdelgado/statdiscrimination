@@ -19,6 +19,7 @@ library(lubridate)
 library(Hmisc)
 library(heplots)
 library(ggExtra)
+library(caret)
 
 # loading data
 load("alldata.RData")
@@ -712,4 +713,36 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
                  lwd = 2, #line width
                  trace.label = "SHB?")
 ```
+
+
+# a prelim knn for gender
+```{r}
+mldata <- alldata %>% select(TCC, AGE, highest, LOCATION_STATE, GENDER) %>% na.omit()
+mldata$highest <- as.numeric(as.factor(mldata$highest))
+mldata$LOCATION_STATE <- as.numeric(as.factor(mldata$LOCATION_STATE))
+
+sample <- sample(c(TRUE, FALSE), nrow(mldata), replace=TRUE, prob=c(0.7,0.3))
+training_x  <- mldata[sample, -5]
+testing_x   <- mldata[!sample, -5]
+training_y <- as.factor(mldata$GENDER[sample])
+testing_y <- as.factor(mldata$GENDER[!sample])
+
+
+
+Mn <- knn(train=training_x,test=testing_x,
+             cl=training_y,k=i)
+
+
+
+
+
+result <- c()
+for (i in 1:20) {
+   set.seed(1)
+   Mn <- knn(train=training_x,test=testing_x,
+             cl=training_y,k=i)
+   result[i]<- mean(testing_y!=Mn)
+}
+```
+
 
