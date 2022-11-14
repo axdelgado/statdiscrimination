@@ -571,6 +571,7 @@ Questions:
 
 Updates to `data_processing.Rmd`:
 * Added code to create `highest`, the column for highest level of educational attainment
+* created code for a KNN model to predict `gender`
 
 
 
@@ -585,6 +586,8 @@ Notes:
 * At this point, just account for gender, TCC, SHB, education level, we have ~230000 complete cases
 * A clarifying comment: how much the wage gap changes due to disclosure itself will account for the presence of statistical discrimination (i.e. hiring managers expecting women to perform worse/have a lower marginal benefit)
 * instrumental variable will help account for statistical, leaving the actual difference due to taste-based
+* The KNN model will need a smaller sample than what I have now, since it takes way to long to run
+* We can't use logistic regression for gender because nonbinary
 ---
 
 Questions:
