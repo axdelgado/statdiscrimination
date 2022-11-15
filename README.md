@@ -570,15 +570,16 @@ Questions:
 <details><summary><b>11/13/2022</b></summary>
 
 Updates to `data_processing.Rmd`:
-* Added code to create `highest`, the column for highest level of educational attainment
-* created code for a KNN model to predict `gender`
+* Added code to create `highest`, the column for highest level of educational attainment 
 
 
 
 ---
 
 Updates to `data_analysis.Rmd`
-* 
+* created code for a KNN model to predict `gender`
+* created code for a multinomial logistic regression to predict `gender`
+    * I ended up using a random subset of 1000 datapoints for now, just to make the analysis faster
 
 ---
 
@@ -588,6 +589,9 @@ Notes:
 * instrumental variable will help account for statistical, leaving the actual difference due to taste-based
 * The KNN model will need a smaller sample than what I have now, since it takes way to long to run
 * We can't use logistic regression for gender because nonbinary
+* Multinomial logistic regression is less accurate than a random draw, haha
+* Using 19 closes neighbors, we get an accuracy of ~ 57%
+    * 19 produces the (local?) maximum model accuracy
 ---
 
 Questions:
