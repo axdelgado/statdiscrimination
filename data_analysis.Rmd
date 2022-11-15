@@ -688,8 +688,18 @@ sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Other"], na.rm = TRUE)
 
 # Instrumental variable
 
-A proposed model: 
-$$ Y=\beta_0 + X\beta_c + SHB\beta_{SHB} + Gender*SHB*\beta_{inter} + \epsilon $$
+A proposed model using 2 state least-square (2SLS): 
+
+Stage 1: Modeling salary disclosure:
+
+$$ \widehat{Disc}_{n \times 1} = \delta _{0 _ {n \times 1}} + 
+\delta _{1} SHB _ {n \times 1} + \gamma _{r\times 1} V _{n \times r}
+$$
+
+Where V is a matrix of other control variables
+
+
+$$ Y=\beta_0 + \beta _1 \widehat{Disc} + \gamma V + \epsilon $$
 
 Where $Y$ is total compensation,  $X$ is a matrix of controls, $\beta_c$ is 
 the vector of coefficients for
@@ -721,7 +731,7 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
 # subset data with dependent and indep vars
 # remove incomplete data
 mldata <- alldata %>% select(TCC, AGE, highest, LOCATION_STATE, GENDER,
-                             Industry, EDU_LVL) %>% 
+                             Industry) %>% 
   na.omit()
 # subset size for data for computational speed
 mldata <-  mldata[sample(nrow(mldata), 5000), ]
@@ -729,7 +739,6 @@ mldata <-  mldata[sample(nrow(mldata), 5000), ]
 mldata$highest <- as.numeric(as.factor(mldata$highest))
 mldata$LOCATION_STATE <- as.numeric(as.factor(mldata$LOCATION_STATE))
 mldata$Industry <- as.numeric(as.factor(mldata$Industry))
-mldata$EDU_LVL <- as.numeric(as.factor(mldata$EDU_LVL))
 
 # partitioning data into training and test data
 sample <- sample(c(TRUE, FALSE), nrow(mldata), replace=TRUE, prob=c(0.7,0.3))
