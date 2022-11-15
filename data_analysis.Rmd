@@ -20,6 +20,7 @@ library(Hmisc)
 library(heplots)
 library(ggExtra)
 library(caret)
+library(class)
 
 # loading data
 load("alldata.RData")
@@ -717,10 +718,20 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
 
 # a prelim knn for gender
 ```{r}
-mldata <- alldata %>% select(TCC, AGE, highest, LOCATION_STATE, GENDER) %>% na.omit()
+# subset data with dependent and indep vars
+# remove incomplete data
+mldata <- alldata %>% select(TCC, AGE, highest, LOCATION_STATE, GENDER,
+                             Industry, EDU_LVL) %>% 
+  na.omit()
+# subset size for data for computational speed
+mldata <-  mldata[sample(nrow(mldata), 5000), ]
+# turning factors into numeric for knn function
 mldata$highest <- as.numeric(as.factor(mldata$highest))
 mldata$LOCATION_STATE <- as.numeric(as.factor(mldata$LOCATION_STATE))
+mldata$Industry <- as.numeric(as.factor(mldata$Industry))
+mldata$EDU_LVL <- as.numeric(as.factor(mldata$EDU_LVL))
 
+# partitioning data into training and test data
 sample <- sample(c(TRUE, FALSE), nrow(mldata), replace=TRUE, prob=c(0.7,0.3))
 training_x  <- mldata[sample, -5]
 testing_x   <- mldata[!sample, -5]
@@ -728,12 +739,11 @@ training_y <- as.factor(mldata$GENDER[sample])
 testing_y <- as.factor(mldata$GENDER[!sample])
 
 
-
+# knn based on 10 closest neighbors
 Mn <- knn(train=training_x,test=testing_x,
-             cl=training_y,k=i)
+             cl=training_y,k=10)
 
-
-
+mean(testing_y==Mn)
 
 
 result <- c()
@@ -741,8 +751,25 @@ for (i in 1:20) {
    set.seed(1)
    Mn <- knn(train=training_x,test=testing_x,
              cl=training_y,k=i)
-   result[i]<- mean(testing_y!=Mn)
+   result[i]<- mean(testing_y==Mn)
 }
+result
+```
+
+# prelim multinomial logistic
+```{r}
+index <- createDataPartition(mldata$GENDER, p = .70, list = FALSE)
+train <- mldata[index,]
+test <- mldata[-index,]
+train$GENDER <- as.factor(train$GENDER)
+test$GENDER <- as.factor(test$GENDER)
+train$GENDER <- relevel(train$GENDER, ref = "Male")
+
+multinom_model <- nnet::multinom(GENDER ~ ., data = train)
+
+test$predicted <- predict(multinom_model, newdata = test, "class")
+tab <- table(test$GENDER, test$predicted)
+round((sum(diag(tab))/sum(tab))*100,2)
 ```
 
 
