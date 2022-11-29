@@ -612,6 +612,40 @@ Questions:
 
 
 
+
+<details><summary><b>11/28/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Recoded `ONET_BROAD` to be used in KNN and multinomial logistic regression
+* Reworked KNN and logistic regression to include `ONET_BROAD`
+
+---
+
+Notes:
+* 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
 <details><summary><b>Update template</b></summary>
 
 Updates to `data_processing.Rmd`:
