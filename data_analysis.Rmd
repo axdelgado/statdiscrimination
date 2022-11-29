@@ -731,14 +731,14 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
 # subset data with dependent and indep vars
 # remove incomplete data
 mldata <- alldata %>% select(TCC, AGE, highest, LOCATION_STATE, GENDER,
-                             Industry) %>% 
+                             ONET_BROAD) %>% 
   na.omit()
 # subset size for data for computational speed
 mldata <-  mldata[sample(nrow(mldata), 5000), ]
 # turning factors into numeric for knn function
 mldata$highest <- as.numeric(as.factor(mldata$highest))
 mldata$LOCATION_STATE <- as.numeric(as.factor(mldata$LOCATION_STATE))
-mldata$Industry <- as.numeric(as.factor(mldata$Industry))
+mldata$ONET_BROAD <- as.numeric(as.factor(mldata$ONET_BROAD))
 
 # partitioning data into training and test data
 sample <- sample(c(TRUE, FALSE), nrow(mldata), replace=TRUE, prob=c(0.7,0.3))
