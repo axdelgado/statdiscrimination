@@ -627,7 +627,9 @@ Updates to `data_analysis.Rmd`
 ---
 
 Notes:
-* 
+* There is no measurable effect on KNN, about 58% accuracy
+    * This technically needed less neighbors
+* Multinomial logistic regresson got worth, about 40% accuracy
 
 ---
 
