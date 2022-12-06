@@ -648,6 +648,40 @@ Questions:
 
 
 
+
+
+
+
+
+
+<details><summary><b>12/05/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Added OLS and IV regression models, predicting TCC via SHQ(and instrumenting with SHB), gender, years of experience, and education level
+
+---
+
+Notes:
+* When doing the IV regression, the estimate for disclosure becomes negative, and the coefficient for male increases drastically
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
+
 <details><summary><b>Update template</b></summary>
 
 Updates to `data_processing.Rmd`:
