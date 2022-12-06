@@ -788,6 +788,50 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
 ```
 
 
+```{r}
+# ols model, no log adjustment, small control set
+lm1 <- lm(
+  log(TCC) ~ SALARY_HISTORY*GENDER + YRS_EXP + highest,
+  # using responses in prof adlers example
+  data = filter(
+    alldata,
+    SALARY_HISTORY %in% c("No, and they did not ask",
+                          "Yes, they asked about my salary history")
+  ) 
+)
+
+summary(lm1)
+
+```
+
+```{r}
+# instrumental variable
+library(AER)
+iv1 <- ivreg(
+  log(TCC) ~ SALARY_HISTORY*GENDER + YRS_EXP + highest|
+    SHB*GENDER + YRS_EXP + highest,
+  # using responses in prof adlers example
+  data = filter(
+    alldata,
+    SALARY_HISTORY %in% c("No, and they did not ask",
+                          "Yes, they asked about my salary history")
+  ) 
+)
+
+summary(iv1)
+```
+
+```{r}
+stage1 <- lm(as.numeric(as.factor(SALARY_HISTORY)) ~ as.numeric(SHB), data = alldata)
+predsalaryhist <- predict.lm(stage1)
+
+iv1 <- lm( 5)
+```
+
+
+
+
+
 instrumental var with binary endogenous regressor?
 
 just run ols and instrumental
