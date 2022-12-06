@@ -686,47 +686,11 @@ sd(alldata$HOURLY_WORKWEEK[alldata$GENDER=="Other"], na.rm = TRUE)
 
 
 
-# Instrumental variable
-
-A proposed model using 2 state least-square (2SLS): 
-
-Stage 1: Modeling salary disclosure:
-
-$$ \widehat{Disc}_{n \times 1} = \delta _{0 _ {n \times 1}} + 
-\delta _{1} SHB _ {n \times 1} + \gamma _{r\times 1} V _{n \times r}
-$$
-
-Where V is a matrix of other control variables
-
-
-$$ Y=\beta_0 + \beta _1 \widehat{Disc} + \gamma V + \epsilon $$
-
-Where $Y$ is total compensation,  $X$ is a matrix of controls, $\beta_c$ is 
-the vector of coefficients for
-the controls, $SHB$ is the vector of pre/post SHB, and $\beta_SHB$ is the 
-coefficient for SHB. We also have $Gender*SHB*\beta_{inter}$, which accounts
-for the interaction of gender and disclosure. 
-Here, SHB is a instrument for salary disclosure, as other
-unobserved variables mah impact both salary history disclosure *and* other
-independent variables. 
-
-
-First let's check for potential interaction effects
-```{r}
-interaction.plot(x.factor = alldata$GENDER, #x-axis variable
-                 trace.factor = alldata$SHB, #variable for lines
-                 response = alldata$TCC, #y-axis variable
-                 fun = median, #metric to plot
-                 ylab = "Total Compensation",
-                 xlab = "Gender",
-                 col = c("red", "blue"),
-                 lty = 1, #line type
-                 lwd = 2, #line width
-                 trace.label = "SHB?")
-```
-
 
 # a prelim knn for gender
+
+Note: doesn't produce good results
+
 ```{r}
 # subset data with dependent and indep vars
 # remove incomplete data
@@ -752,9 +716,10 @@ testing_y <- as.factor(mldata$GENDER[!sample])
 Mn <- knn(train=training_x,test=testing_x,
              cl=training_y,k=10)
 
+# accuracey for 10 neighbors
 mean(testing_y==Mn)
 
-
+# accuracy for 1 to 20 neighbors
 result <- c()
 for (i in 1:20) {
    set.seed(1)
@@ -782,3 +747,61 @@ round((sum(diag(tab))/sum(tab))*100,2)
 ```
 
 
+
+# Instrumental variable
+
+A proposed model using 2 state least-square (2SLS): 
+
+Stage 1: Modeling salary disclosure:
+
+$$ \widehat{Disc}_{n \times 1} = \delta _{0 _ {n \times 1}} + 
+\delta _{1} SHB _ {n \times 1} + \gamma _{r\times 1} V _{n \times r}
+$$
+
+Where V is a matrix of other control variables
+
+
+$$ Y=\beta_0 + \beta _1 \widehat{Disc} + \gamma V + \epsilon $$
+
+Where $Y$ is total compensation,  $X$ is a matrix of controls, $\beta_c$ is 
+the vector of coefficients for
+the controls, $SHB$ is the vector of pre/post SHB, and $\beta_SHB$ is the 
+coefficient for SHB. We also have $Gender*SHB*\beta_{inter}$, which accounts
+for the interaction of gender and disclosure. 
+Here, SHB is a instrument for salary disclosure, as other
+unobserved variables may impact both salary history disclosure *and* other
+independent variables. 
+
+
+First let's check for potential interaction effects
+```{r}
+interaction.plot(x.factor = alldata$GENDER, #x-axis variable
+                 trace.factor = alldata$SHB, #variable for lines
+                 response = alldata$TCC, #y-axis variable
+                 fun = median, #metric to plot
+                 ylab = "Total Compensation",
+                 xlab = "Gender",
+                 col = c("red", "blue"),
+                 lty = 1, #line type
+                 lwd = 2, #line width
+                 trace.label = "SHB?")
+```
+
+
+instrumental var with binary endogenous regressor?
+
+just run ols and instrumental
+
+just get numbers to work with for now
+
+test for instrument relevance
+
+once men or women disclose, what does it do to their pay? (doesn't really depend on motivations for disclosing)
+
+look at tsls documentation in stata
+
+talk to statlab about projecting X onto Z
+talk to harry too haha
+
+
+senior ideas: geographic variation (job moves during pandemic), occupational status and gender
