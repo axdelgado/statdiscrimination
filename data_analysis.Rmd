@@ -788,21 +788,6 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
 ```
 
 
-```{r}
-# ols model, no log adjustment, small control set
-lm1 <- lm(
-  log(TCC) ~ SALARY_HISTORY*GENDER + YRS_EXP + highest,
-  # using responses in prof adlers example
-  data = filter(
-    alldata,
-    SALARY_HISTORY %in% c("No, and they did not ask",
-                          "Yes, they asked about my salary history")
-  ) 
-)
-
-summary(lm1)
-
-```
 
 ```{r}
 # instrumental variable
@@ -830,7 +815,38 @@ iv1 <- lm( 5)
 
 
 
+# OLS
 
+```{r}
+# ols model, no log adjustment, small control set, no interaction
+alldata$ONET_MINOR <- as.factor(alldata$ONET_MINOR)
+lm1 <- lm(
+  log(TCC) ~ SALARY_HISTORY + GENDER + YRS_EXP + highest + ONET_MINOR,
+  # using responses in prof adlers example
+  data = filter(
+    alldata,
+    SALARY_HISTORY %in% c("No, and they did not ask",
+                          "Yes, they asked about my salary history")
+  ) 
+)
+
+summary(lm1)
+```
+
+```{r}
+# ols model, no log adjustment, small control set, with interaction
+lm1 <- lm(
+  log(TCC) ~ SALARY_HISTORY*GENDER + YRS_EXP + highest,
+  # using responses in prof adlers example
+  data = filter(
+    alldata,
+    SALARY_HISTORY %in% c("No, and they did not ask",
+                          "Yes, they asked about my salary history")
+  ) 
+)
+
+summary(lm1)
+```
 
 instrumental var with binary endogenous regressor?
 
@@ -849,3 +865,22 @@ talk to harry too haha
 
 
 senior ideas: geographic variation (job moves during pandemic), occupational status and gender
+
+joe peck urban institute
+wash inst for equitable growth
+brookings
+rand corporation
+
+
+
+
+
+
+
+
+
+
+
+
+merge in data about local labor market conditions (what did I do over the summer?)
+webscraping?
