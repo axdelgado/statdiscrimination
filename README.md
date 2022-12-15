@@ -682,7 +682,49 @@ Questions:
 
 
 
-<details><summary><b>Update template</b></summary>
+<details><summary><b>12/13/2022</b></summary>
+
+Updates to `data_processing.Rmd`:
+* 
+
+---
+
+Updates to `data_analysis.Rmd`
+* Added models to show main effects of covariates without interactions
+
+---
+
+Notes:
+* Instrumental variables that are binary likely do not have a linear relationship with our dependent variable, 
+
+---
+
+Questions:
+* 
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<details><summary><b>Update Template</b></summary>
 
 Updates to `data_processing.Rmd`:
 * 
