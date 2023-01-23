@@ -237,6 +237,10 @@ for (i in 1:length(2015:2020)){
   print(salaryhist2(iter))
 }
 
+
+
+
+
 ```
 
 ```{r}
@@ -788,6 +792,65 @@ interaction.plot(x.factor = alldata$GENDER, #x-axis variable
 ```
 
 
+We can test for the inclusion restriction of instrumental variables via 
+first-stage regression, i.e. regressing disclosure on SHB.
+
+```{r}
+# focus on (question+disclosure) and (no question+no disclosure)
+alldata2 <- filter(alldata, 
+                   SALARY_HISTORY %in% c("No, and they did not ask",
+                                         "Yes, they asked about my salary history"))
+alldata2$SALARY_HISTORY <- as.numeric(as.factor(alldata2$SALARY_HISTORY))-1 #1=NO, 2=YES
+stage1 <- lm(SALARY_HISTORY ~ SHB + GENDER + AGE + RACE_SET + highest + LOCATION_STATE + ONET_MINOR, data = alldata2)
+summary1 <- stage1 %>% summary()
+summary1$coefficients[c(1,2,3,6),]
+```
+
+Next we can look at relationships(or lack thereof) between our instrument (SHB) 
+and our other controls. We can do this with covariances, plots, and basic linear models.
+
+```{r}
+#covariances for numeric, binary controls
+cov(alldata$SHB, as.numeric(as.factor(alldata$GENDER)))
+cov(alldata$SHB, alldata$AGE)
+```
+
+
+```{r}
+# first some plots (gross code sorry)
+sample1 <- alldata2[sample(nrow(alldata2),10000),]
+sample1 <- sample1[sample1$RACE_SET %in% c("American Indian and Alaska Native",
+                                           "Asian",
+                                           "Black or African American",
+                                           "Hispanic",
+                                           "White"),]
+# salary history
+plot(jitter(SALARY_HISTORY, 0.5)~jitter(SHB, 0.5), data = sample1)
+abline(lm(SALARY_HISTORY~SHB, data = sample1)$coefficients[1],
+       lm(SALARY_HISTORY~SHB, data = sample1)$coefficients[2])
+# gender
+plot(jitter(as.numeric(as.factor(GENDER)), 0.5)~jitter(SHB, 0.5), data = sample1,
+     ylim=c(0,2.5))
+abline(lm(as.numeric(as.factor(GENDER))~SHB, data = alldata2)$coefficients[1],
+       lm(as.numeric(as.factor(GENDER))~SHB, data = alldata2)$coefficients[2])
+# age
+plot(AGE~SHB, data = sample1)
+abline(lm(AGE~SHB, data = alldata2)$coefficients[1],
+       lm(AGE~SHB, data = alldata2)$coefficients[2])
+# race breakdown
+sample1 %>%  
+  group_by(RACE_SET, SHB) %>%  
+  summarise(Count=n()) %>% 
+  ggplot(aes(x=RACE_SET, y=Count, fill=as.factor(SHB))) +
+  geom_bar(stat='identity', position= "dodge") ### make the sample size 10000
+
+
+summary(lm(as.numeric(as.vector(SALARY_HISTORY)) ~ SHB, data = alldata2))
+summary(lm(as.numeric(as.factor(GENDER))~SHB, data = alldata2))
+summary(lm(AGE ~ SHB, data = alldata2))
+```
+
+
 
 ```{r}
 # instrumental variable
@@ -847,6 +910,13 @@ lm1 <- lm(
 
 summary(lm1)
 ```
+
+
+
+
+
+
+
 
 instrumental var with binary endogenous regressor?
 
