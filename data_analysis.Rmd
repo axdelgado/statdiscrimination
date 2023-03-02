@@ -877,19 +877,66 @@ summary(lm(AGE ~ SHB, data = alldata2))
 
 ```{r}
 # instrumental variable
-library(AER)
-iv1 <- ivreg(
-  log(TCC) ~ SALARY_HISTORY*GENDER + YRS_EXP + highest|
-    SHB*GENDER + YRS_EXP + highest,
-  # using responses in prof adlers example
-  data = filter(
-    alldata,
-    SALARY_HISTORY %in% c("No, and they did not ask",
-                          "Yes, they asked about my salary history")
-  ) 
+
+# subset data and recode salary history question as a binary
+alldata2 <- filter(
+  alldata,
+  SALARY_HISTORY %in% c("No, and they did not ask",
+                        "Yes, they asked about my salary history")
 )
 
-summary(iv1)
+alldata2$SALARY_HIST_BI <- alldata2$SALARY_HISTORY %>% 
+  as.factor() %>%
+  as.numeric()
+alldata2$SALARY_HIST_BI <- alldata2$SALARY_HIST_BI - 1
+
+# controlled by years experience, race, highest education, state, age, job
+# no interactions
+library(AER)
+iv1 <- ivreg(
+  log(SALARY) ~ SALARY_HIST_BI + GENDER + YRS_EXP + AGE + RACE_SET + highest +
+    LOCATION_STATE + ONET_MINOR|
+    SHB + GENDER + YRS_EXP + AGE + RACE_SET + highest +
+    LOCATION_STATE + ONET_MINOR,
+   data = alldata2
+)
+
+nrow(summary(iv1)$coefficients)
+summary(iv1)$coefficients[c(1:7),]
+
+
+
+# controlled by years experience, highest education, state, age, job
+# no interactions
+iv2 <- ivreg(
+  log(SALARY) ~ SALARY_HIST_BI + GENDER + YRS_EXP + AGE + highest +
+    LOCATION_STATE + ONET_MINOR|
+    SHB + GENDER + YRS_EXP + AGE + highest +
+    LOCATION_STATE + ONET_MINOR,
+   data = alldata2
+)
+
+nrow(summary(iv2)$coefficients)
+summary(iv2)$coefficients[c(1:7),]
+
+
+
+# controlled by years experience, highest education, state, age, job
+# with interactions
+# different subsetting and factor methods (original)
+iv3 <- ivreg(
+  log(SALARY) ~ SALARY_HISTORY*GENDER + YRS_EXP + AGE + RACE_SET  + highest +
+    LOCATION_STATE + ONET_MINOR|
+    SHB*GENDER + GENDER + YRS_EXP + RACE_SET + AGE + highest +
+    LOCATION_STATE + ONET_MINOR,
+   data = filter(
+     alldata, 
+     SALARY_HISTORY %in% c("No, and they did not ask",
+                           "Yes, they asked about my salary history"))
+)
+
+nrow(summary(iv3)$coefficients)
+summary(iv3)$coefficients[c(1:7,388:390),]
 ```
 
 ```{r}
@@ -904,6 +951,7 @@ iv1 <- lm( 5)
 # OLS
 
 ```{r}
+######### don't use this
 # ols model, no log adjustment, small control set, no interaction
 alldata$ONET_MINOR <- as.factor(alldata$ONET_MINOR)
 lm1 <- lm(
@@ -920,23 +968,86 @@ summary(lm1)
 ```
 
 ```{r}
-# ols model, no log adjustment, small control set, with interaction
-lm1 <- lm(
-  log(TCC) ~ SALARY_HISTORY*GENDER + YRS_EXP + highest,
-  # using responses in prof adlers example
-  data = filter(
-    alldata,
-    SALARY_HISTORY %in% c("No, and they did not ask",
-                          "Yes, they asked about my salary history")
-  ) 
+# ols model, log salary, no interactions
+## controls: age, job, location(state), highest level of education, 
+## years of experience
+ols1 <- lm(
+  log(SALARY) ~ GENDER + SALARY_HISTORY + YRS_EXP + AGE + highest +
+    LOCATION_STATE + ONET_MINOR,
+  data = alldata
 )
 
-summary(lm1)
+
+
+summary(ols1)$coefficients[c(1:10),]
+```
+
+```{r}
+# ols model, log salary, interactions w/ disclosure
+## controls: age, job, location(state), highest level of education, 
+## years of experience
+ols2 <- lm(
+  log(SALARY) ~ GENDER*SALARY_HISTORY + YRS_EXP + AGE + highest +
+    LOCATION_STATE + ONET_MINOR,
+  data = alldata
+)
+
+nrow(summary(ols2)$coefficients)
+summary(ols2)$coefficients[c(1:10,155:166),]
+
+# subset based on highest present racial groups
+ols3 <- alldata %>% filter(RACE_SET %in% c("American Indian and Alaska Native",
+                                           "Asian",
+                                           "Black or African American",
+                                           "Hispanic",
+                                           "White")) %>%
+  lm(
+    log(SALARY) ~ GENDER*SALARY_HISTORY + YRS_EXP + AGE + RACE_SET + highest +
+    LOCATION_STATE + ONET_MINOR,
+    data = .
+  )
+
+
+
+summary(ols3)$coefficients[c(1:10,156:168),] # coefficients of interest
+
+```
+
+# DID
+
+```{r}
+# year column
+alldata$year <- year(alldata$UPDATE_DATE)
+table(alldata$year)
+table(alldata$SHB)
+str(alldata$SHB)
 ```
 
 
+```{r}
+# DID model, log salary, no interactions
+## controls: age, job, location(state), highest level of education, 
+## years of experience
+did1 <- lm(
+  log(SALARY) ~ SHB*GENDER + YRS_EXP + AGE + highest +
+    LOCATION_STATE + ONET_MINOR,
+  data = alldata
+)
 
+nrow(summary(did1)$coefficients)
+summary(did1)$coefficients[c(1:8,807),]
+```
 
+```{r}
+# DID following davis, ouimet, and wang
+did2 <- lm(
+  log(SALARY) ~ year + SHB*GENDER + YRS_EXP + AGE + highest +
+    LOCATION_STATE + ONET_MINOR,
+  data = alldata
+)
+nrow(summary(did2)$coefficients)
+summary(did2)$coefficients[c(1:8,156:158),]
+```
 
 
 
@@ -953,24 +1064,12 @@ once men or women disclose, what does it do to their pay? (doesn't really depend
 
 look at tsls documentation in stata
 
-talk to statlab about projecting X onto Z
-talk to harry too haha
 
-
-senior ideas: geographic variation (job moves during pandemic), occupational status and gender
 
 joe peck urban institute
 wash inst for equitable growth
 brookings
 rand corporation
-
-
-
-
-
-
-
-
 
 
 
