@@ -221,6 +221,7 @@ managers, sales managers, financial analysts, and management analysts. Since
 they're mostly uniformly in the same career area (upper management), we can just
 use the 2020 99th percentile as a cutoff for our data.
 
+# Filtering out top 1%
 ```{r}
 alldata <- alldata %>% filter(TCC < 401622)
 ```
@@ -310,6 +311,8 @@ educ <- educ %>%
 
 alldata$highest <- educ$highest
 ```
+
+
 
 
 # Saving data into a .RData and .csv
