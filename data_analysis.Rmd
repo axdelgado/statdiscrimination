@@ -570,7 +570,7 @@ https://urban-institute.medium.com/how-to-create-state-and-county-maps-easily-in
 head(sort(prop.table(table(alldata$LOCATION_CITY)),TRUE),15)
 ```
 
-Here's the 15 most prominent ccities in our dataset. 
+Here's the 15 most prominent cities in our dataset. 
 
 
 # SHQ Comparisons
@@ -1076,3 +1076,5 @@ rand corporation
 
 merge in data about local labor market conditions (what did I do over the summer?)
 webscraping?
+
+beep boop
