@@ -11,7 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # setting up environment
 rm(list=ls())
-setwd("~/Yale/2022 Fall/Tobin RA")
+# setwd("~/Yale/2022 Fall/Tobin RA")
+# need to make a new wd now
 # loading packages
 library(readxl)
 library(tidyverse)
