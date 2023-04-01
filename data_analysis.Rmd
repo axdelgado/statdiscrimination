@@ -22,6 +22,7 @@ library(heplots)
 library(ggExtra)
 library(caret)
 library(class)
+library(knitr)
 
 # loading data
 load("alldata.RData")
@@ -298,6 +299,7 @@ alldata %>% filter(GENDER=="Other") %>% select(TCC) %>% unlist() %>% sd()
 ```{r}
 mean(alldata$SALARY[alldata$GENDER == "Female"], na.rm = TRUE)
 mean(alldata$SALARY[alldata$GENDER == "Male"], na.rm = TRUE)
+salarydifs <- c()
 for (i in 1:length(2015:2020)){
   tempfem <- alldata %>%
     filter(GENDER=="Female") %>%
@@ -309,10 +311,21 @@ for (i in 1:length(2015:2020)){
     filter(year(UPDATE_DATE) == c(2015:2020)[i]) %>%
     select(SALARY) %>%
     colMeans(na.rm = TRUE)
-  print(tempfem - tempmale)
+  salarydifs[i] <- tempmale - tempfem
 }
 
+plot(salarydifs, type = 'l', xlab = "year")
 
+```
+
+```{r}
+# salary diffs, taking into account occupation
+alldata %>% filter(GENDER %in% c("Female", "Male")) %>% 
+  group_by(Industry, GENDER) %>% 
+  summarise(mean_salary = mean(SALARY, na.rm=TRUE)) %>%
+  spread(GENDER, mean_salary) %>%
+  mutate(Industry = gsub(".*\\\\","",Industry)) %>%
+  kable()
 ```
 
 
