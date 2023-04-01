@@ -294,6 +294,28 @@ alldata %>% filter(GENDER=="Other") %>% select(TCC) %>%
 alldata %>% filter(GENDER=="Other") %>% select(TCC) %>% unlist() %>% sd()
 ```
 
+## Salary by gender
+```{r}
+mean(alldata$SALARY[alldata$GENDER == "Female"], na.rm = TRUE)
+mean(alldata$SALARY[alldata$GENDER == "Male"], na.rm = TRUE)
+for (i in 1:length(2015:2020)){
+  tempfem <- alldata %>%
+    filter(GENDER=="Female") %>%
+    filter(year(UPDATE_DATE) == c(2015:2020)[i]) %>%
+    select(SALARY) %>%
+    colMeans(na.rm = TRUE)
+  tempmale <- alldata %>%
+    filter(GENDER=="Male") %>%
+    filter(year(UPDATE_DATE) == c(2015:2020)[i]) %>%
+    select(SALARY) %>%
+    colMeans(na.rm = TRUE)
+  print(tempfem - tempmale)
+}
+
+
+```
+
+
 
 ## Industry by gender
 ```{r}
