@@ -10,7 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r message=FALSE}
 #working directory
 rm(list=ls())
-setwd("~/Yale/2022 Fall/Tobin RA")
+setwd("~/statdiscrimination")
+
 # packages
 library(tidyverse)
 library(readxl)
