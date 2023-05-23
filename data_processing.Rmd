@@ -318,6 +318,7 @@ alldata$highest <- educ$highest
 
 # Saving data into a .RData and .csv
 ```{r}
+alldata <- alldata
 save(alldata, file = "alldata.Rdata") #filesize ~ 0.12 GB
 # write.csv(alldata, "alldata.csv") filesize ~ 1.2 GB, yikes!
 ```
